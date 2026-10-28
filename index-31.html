@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>গণনা খাতা</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0F5E59">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F6F5;--sf:#fff;--ink:#1B2227;--mut:#5E6A72;--ln:#D9E0E3;--red:#A4262C;--grn:#1E6B4F;--rb:#FBEDEC;--gb:#E7F3EE;--rbtn:#A4262C;--gbtn:#1E6B4F;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12181B;--sf:#1B2327;--ink:#E8EEF0;--mut:#9AA8AF;--ln:#2D393F;--red:#F08A8F;--grn:#6FCFA6;--rb:#2B1B1D;--gb:#17281F;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12181B;--sf:#1B2327;--ink:#E8EEF0;--mut:#9AA8AF;--ln:#2D393F;--red:#F08A8F;--grn:#6FCFA6;--rb:#2B1B1D;--gb:#17281F;color-scheme:dark}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 "Hind Siliguri","Noto Sans Bengali","Kalpurush",system-ui,sans-serif;padding:16px 16px 96px}
+main{max-width:560px;margin:0 auto}
+h2{font-size:18px;margin:24px 0 8px;font-weight:600}
+p{margin:0}
+.hero{background:var(--sf);border:1px solid var(--ln);border-left:4px solid var(--red);border-radius:6px;padding:18px 18px 16px;background-image:repeating-linear-gradient(transparent 0 33px,var(--ln) 33px 34px)}
+.hero .lab{color:var(--mut);font-size:16px}
+.hero .big{font-size:44px;font-weight:700;line-height:1.3;color:var(--red)}
+.hero .sub{color:var(--mut);font-size:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.btn{display:block;width:100%;min-height:50px;border:0;border-radius:8px;padding:10px 14px;font:600 17px inherit;font-family:inherit;color:#fff;background:var(--ink);cursor:pointer;text-align:center;text-decoration:none}
+.btn.give{background:var(--rbtn)}.btn.get{background:var(--gbtn)}
+.btn.ghost{background:var(--sf);color:var(--ink);border:1px solid var(--ln)}
+.btn:focus-visible,.row:focus-visible,#nav button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--grn);outline-offset:2px}
+.list{list-style:none;margin:0;padding:0;background:var(--sf);border:1px solid var(--ln);border-radius:8px;overflow:hidden}
+.list li+li{border-top:1px solid var(--ln)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;min-height:54px;padding:10px 14px;background:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.red{color:var(--red);font-weight:700}.grn{color:var(--grn);font-weight:700}.mut{color:var(--mut)}
+.empty{color:var(--mut);padding:14px 2px}
+label{display:block;font-weight:500;margin:14px 0 4px}
+input,select,textarea{width:100%;min-height:48px;padding:10px 12px;font:inherit;color:var(--ink);background:var(--sf);border:1px solid var(--ln);border-radius:8px}
+textarea{min-height:90px;font-size:14px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg button{min-height:50px;border-radius:8px;border:2px solid var(--ln);background:var(--sf);color:var(--ink);font:600 17px inherit;font-family:inherit;cursor:pointer}
+.seg button.on[data-type="give"]{border-color:var(--red);background:var(--rb);color:var(--red)}
+.seg button.on[data-type="get"]{border-color:var(--grn);background:var(--gb);color:var(--grn)}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:14px;margin-top:12px}
+.stat{display:flex;justify-content:space-between;padding:10px 0}.stat+.stat{border-top:1px solid var(--ln)}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px}
+.head h1{font-size:24px;margin:0;line-height:1.3}
+.tx{display:flex;justify-content:space-between;gap:10px;padding:10px 14px}
+.tx small{display:block;color:var(--mut);font-size:14px}
+.del{background:none;border:0;color:var(--mut);font:inherit;font-size:14px;padding:6px 0;cursor:pointer;text-decoration:underline}
+.link{background:none;border:0;color:var(--grn);font:600 16px inherit;font-family:inherit;padding:8px 0;cursor:pointer}
+.brand{display:flex;align-items:center;gap:12px;max-width:560px;margin:0 auto 14px}.brand svg{flex:none;border-radius:12px}
+.st{font-size:14px;color:var(--mut);max-width:560px;margin:0 auto 10px}.st.bad{color:var(--red)}
+#nav{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(5,1fr);background:var(--sf);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+#nav button{min-height:56px;background:none;border:0;border-top:3px solid transparent;font:500 14px inherit;font-family:inherit;color:var(--mut);cursor:pointer}
+#nav button.on{color:var(--ink);border-top-color:var(--red);font-weight:700}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:14px 0 4px;padding-bottom:2px}.chips button{flex:none;min-height:42px;padding:6px 14px;border-radius:21px;border:1px solid var(--ln);background:var(--sf);color:var(--ink);font:500 15px inherit;font-family:inherit;cursor:pointer}.chips button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tag{display:inline-block;font-size:13px;font-weight:600;padding:1px 8px;border-radius:10px;margin-left:6px;vertical-align:middle}.tag.reg{background:var(--gb);color:var(--grn)}.tag.occ{background:#FFF3D6;color:#8A5A00}.tag.pro{background:#E6EEFA;color:#2F5597}
+.crow{display:flex;align-items:center}.crow .row{flex:1;min-width:0}.crow .row small{display:block;color:var(--mut);font-size:14px;font-weight:400}.wa{flex:none;display:flex;align-items:center;justify-content:center;width:52px;align-self:stretch;border-left:1px solid var(--ln);color:var(--grn);text-decoration:none}
+#toast{position:fixed;left:16px;right:16px;bottom:calc(72px + env(safe-area-inset-bottom,0px));max-width:528px;margin:0 auto;background:var(--ink);color:var(--bg);padding:12px 14px;border-radius:8px;font-size:16px;display:none;z-index:6}
+
+/* ===== প্রিমিয়াম লুক (শুধু দেখতে, হিসাবের কিছু বদলায়নি) ===== */
+:root{--br:#0F5E59;--br2:#178178;--gold:#E7B53C;--sh:0 1px 2px rgba(16,40,38,.06),0 4px 14px rgba(16,40,38,.07);--ln2:#E7ECEB;--bg:#F1F4F3}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sh:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.35);--ln2:#26323A;--bg:#10161A}}
+:root[data-theme="dark"]{--sh:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.35);--ln2:#26323A;--bg:#10161A}
+body{background:var(--bg)}
+.brand{background:linear-gradient(135deg,var(--br) 0%,var(--br2) 100%);color:#fff;border-radius:20px;padding:16px;box-shadow:0 8px 24px rgba(15,94,89,.28);position:relative;overflow:hidden}
+.brand::after{content:"";position:absolute;right:-30px;top:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(231,181,60,.35),transparent 70%)}
+.brand img{box-shadow:0 0 0 2px rgba(255,255,255,.35);background:#fff}
+.brand b{color:#fff}.brand .mut{color:rgba(255,255,255,.82)!important}
+.st{display:inline-flex;align-items:center;gap:6px;background:var(--gb);color:var(--grn);font-weight:600;font-size:13px;padding:4px 12px;border-radius:20px;margin:0 0 6px}
+.st::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.st.bad{background:var(--rb);color:var(--red)}
+#st{display:flex;width:max-content;max-width:min(560px,100%)}
+@media (min-width:600px){#st{margin-left:auto;margin-right:auto}}
+h2{display:flex;align-items:center;gap:8px;font-weight:700}
+h2::before{content:"";width:4px;height:18px;border-radius:2px;background:var(--gold)}
+.card,.list{border:1px solid var(--ln2);border-radius:16px;box-shadow:var(--sh)}
+.list li+li,.stat+.stat{border-top-color:var(--ln2)}
+.card{padding:6px 16px}
+.stat{padding:13px 0;align-items:center}
+.stat b{font-size:18px;font-variant-numeric:tabular-nums}
+.hero{border:0;border-radius:18px;box-shadow:var(--sh);background-image:none;border-left:5px solid var(--red)}
+input,select,textarea{border:1px solid var(--ln2);border-radius:12px;box-shadow:inset 0 1px 2px rgba(16,40,38,.04)}
+input:focus,select:focus,textarea:focus{border-color:var(--br2);outline:none;box-shadow:0 0 0 3px rgba(23,129,120,.18)}
+.btn{border-radius:14px;box-shadow:0 3px 10px rgba(16,40,38,.14);background:linear-gradient(135deg,var(--br2),var(--br))}
+.btn.give{background:linear-gradient(135deg,#B8323A,#8E1F25)}
+.btn.get{background:linear-gradient(135deg,#238063,#175A43)}
+.btn.ghost{border:1.5px dashed var(--br2);color:var(--br);background:var(--sf);box-shadow:none;font-weight:600}
+.seg button{border-radius:14px;border-width:1.5px;border-color:var(--ln2);box-shadow:var(--sh)}
+.seg button.on[data-type="give"]{background:linear-gradient(135deg,#B8323A,#8E1F25);color:#fff;border-color:transparent}
+.seg button.on[data-type="get"]{background:linear-gradient(135deg,#238063,#175A43);color:#fff;border-color:transparent}
+.chips button{border-color:var(--ln2);box-shadow:var(--sh)}
+.chips button.on{background:var(--br);border-color:var(--br);color:#fff}
+.link{color:var(--br2)}
+#nav{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto;border:1px solid var(--ln2);border-radius:20px;padding:6px;gap:4px;box-shadow:0 8px 28px rgba(16,40,38,.16)}
+#nav button{min-height:48px;border-top:0;border-radius:14px;font-size:14px}
+#nav button.on{background:var(--br);color:#fff}
+#toast{border-radius:14px;bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+
+
+/* ===== প্রিমিয়াম ধাপ ৩: নাম ও রিপোর্টের লেখা বড় ও প্রিমিয়াম ===== */
+.row>span:first-child{font-size:19px;font-weight:600;letter-spacing:.15px;line-height:1.35}
+.row>span:first-child small{font-size:14.5px!important;font-weight:400;letter-spacing:0;margin-top:3px}
+.row>span:last-child{font-size:17.5px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;flex:none}
+.row{min-height:62px;padding:12px 16px}
+.crow .row .tag{font-size:12.5px;padding:2px 9px}
+.stat{padding:15px 0;gap:12px}
+.stat>span{font-size:18px;font-weight:600;line-height:1.3;color:var(--ink)}
+.stat>span small{display:block;font-size:13.5px;font-weight:400;color:var(--mut);margin-top:2px}
+.stat>b{font-size:20px;font-weight:700;white-space:nowrap}
+.stat.tot{background:var(--mint);margin:4px -16px;padding:15px 16px;border-top:0!important}
+.stat.tot>span{font-size:19px;font-weight:700}
+.stat.tot>b{font-size:22px}
+.stat.tot+.stat{border-top:0}
+
+/* ===== প্রিমিয়াম ধাপ ২: সাদা-সাধারণ অংশগুলো ===== */
+:root{--mint:#E8F4F1;--mint2:#D3EAE4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--mint:#16302B;--mint2:#1F4039}}
+:root[data-theme="dark"]{--mint:#16302B;--mint2:#1F4039}
+.seg button:not(.on)[data-type="give"]{background:var(--rb);color:var(--red);border-color:transparent}
+.seg button:not(.on)[data-type="get"]{background:var(--gb);color:var(--grn);border-color:transparent}
+.seg button:not(.on){box-shadow:none;font-weight:700}
+select{-webkit-appearance:none;appearance:none;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%23178178' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 16px center;border:1.5px solid var(--mint2);font-weight:600;padding-right:44px;color:var(--ink)}
+label:has(> input[type=checkbox]){background:var(--sf)!important;border:1px solid var(--ln2)!important;border-radius:16px!important;box-shadow:var(--sh);padding:14px 16px!important;cursor:pointer}
+label:has(> input[type=checkbox]:checked){background:var(--rb)!important;border-color:var(--red)!important;color:var(--red)}
+input[type=checkbox]{-webkit-appearance:none;appearance:none;width:26px!important;min-height:26px!important;height:26px;padding:0;margin:0;border:2px solid var(--br2);border-radius:8px;background:var(--sf);box-shadow:none;cursor:pointer;display:grid;place-content:center}input[type=checkbox]:checked{background:var(--red) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='11' viewBox='0 0 14 11'%3E%3Cpath d='M1.5 5.5l4 4 7-8' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center;border-color:var(--red)}
+.btn.ghost{border:1.5px solid var(--mint2);background:var(--mint);color:var(--br);box-shadow:none;font-weight:700}
+.btn.ghost:active{background:var(--mint2)}
+.btn.ghost[data-act="logout"]{background:var(--rb);border-color:transparent;color:var(--red)}
+
+/* ===== প্রিমিয়াম ধাপ ৪: মেনু আইকন ও আজকের কার্ড ===== */
+#nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:56px;padding:4px 2px;font-size:12.5px;line-height:1.2}
+#nav .ni{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#nav button.on .ni{stroke-width:2.2}
+body{padding-bottom:110px}
+.today{margin-top:14px;background:var(--sf);border:1px solid var(--ln2);border-radius:18px;box-shadow:var(--sh);padding:14px}
+.today .th{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.today .th b{font-size:18px}
+.today .sw{display:flex;background:var(--mint);border-radius:12px;padding:3px}
+.today .sw button{border:0;background:none;font:600 14px inherit;font-family:inherit;color:var(--br);padding:6px 12px;border-radius:9px;cursor:pointer;min-height:34px}
+.today .sw button.on{background:var(--br);color:#fff;box-shadow:0 2px 6px rgba(15,94,89,.3)}
+.today .g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.today .t{border-radius:14px;padding:11px 12px;min-width:0}
+.today .t p{margin:0;font-size:14px;font-weight:600;opacity:.85}
+.today .t strong{display:block;font-size:20px;font-weight:700;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.today .t1{background:linear-gradient(135deg,#E3F1EE,#D1E9E3);color:#0F5E59}
+.today .t2{background:linear-gradient(135deg,#E5F4EA,#D3EBDB);color:#1E6B4F}
+.today .t3{background:linear-gradient(135deg,#FFF5DC,#FDEBC0);color:#8A5A00}
+.today .t4{background:linear-gradient(135deg,#FBEDEC,#F6DCDA);color:#A4262C}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .today .t{background:var(--mint);color:var(--ink)}}
+:root[data-theme="dark"] .today .t{background:var(--mint);color:var(--ink)}
+
+/* ===== প্রিমিয়াম ধাপ ৫: ক্লায়েন্টের রঙিন গোল ===== */
+.nmw{display:flex!important;align-items:center;gap:12px;min-width:0}
+.av{flex:none;width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-weight:700;font-size:19px;letter-spacing:0;line-height:1;box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .av{filter:saturate(.9) brightness(.92)}}
+
+/* ===== প্রিমিয়াম ধাপ ৬: ৭ দিনের চার্ট ===== */
+.wk{background:linear-gradient(135deg,var(--br) 0%,var(--br2) 100%);color:#fff;border-radius:20px;padding:16px 16px 12px;box-shadow:0 8px 24px rgba(15,94,89,.25);margin-bottom:16px}
+.wk-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.wk-l{margin:0;font-size:15px;opacity:.85}
+.wk-s{margin:2px 0 0;font-size:24px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.wk-b{font-size:13px;font-weight:700;padding:2px 8px;border-radius:10px}
+.wk-b.up{background:rgba(255,255,255,.2);color:#C9F7DD}.wk-b.dn{background:rgba(255,255,255,.18);color:#FFD2CF}
+.wk-best{margin:0;text-align:right;font-size:13px;opacity:.9;line-height:1.3}.wk-best b{font-size:16px;color:var(--gold)}
+.wk-g{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:end;height:150px;margin-top:12px}
+.wk-c{display:flex;flex-direction:column;align-items:center;height:100%;min-width:0}
+.wk-v{font-size:11.5px;font-weight:600;height:17px;white-space:nowrap;opacity:.9}
+.wk-t{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center}
+.wk-bar{width:70%;max-width:30px;border-radius:7px 7px 3px 3px;background:rgba(255,255,255,.38)}
+.wk-c.now .wk-bar{background:linear-gradient(180deg,#F6CE6A,var(--gold));box-shadow:0 2px 8px rgba(231,181,60,.45)}
+.wk-d{font-size:12px;margin-top:5px;opacity:.85;white-space:nowrap}.wk-c.now .wk-d{font-weight:700;opacity:1;color:var(--gold)}
+.wk-f{margin:8px 0 0;font-size:12.5px;opacity:.75}
+.wk-g{position:relative}.wk-bar.z{background:rgba(255,255,255,.15)}
+.wk-e{position:absolute;left:0;right:0;top:34%;margin:0;text-align:center;font-size:14px;opacity:.85;line-height:1.5}
+
+/* ===== প্রিমিয়াম ধাপ ৭: রিপোর্ট, স্টক, এন্ট্রি, টাকার ব্যাজ ===== */
+.sl{display:flex;align-items:center;gap:12px;min-width:0}
+.si{flex:none;width:40px;height:40px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:19px}
+.si.r1{background:#E3F1EE}.si.r2{background:#E2F3E8}.si.r3{background:#FFF3D6}.si.r4{background:#F9E3E2}.si.r5{background:#fff;box-shadow:0 2px 8px rgba(15,94,89,.15)}
+.stat>b{padding:5px 12px;border-radius:12px;background:var(--bg)}
+.stat>b.red{background:var(--rb)}.stat>b.grn{background:var(--gb)}
+.stat.tot>b{background:#fff}
+.pn{font-weight:700;font-size:18.5px;display:block;line-height:1.3}
+.pc{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.pc em{font-style:normal;font-size:13px;font-weight:600;padding:2px 9px;border-radius:9px;background:var(--bg);color:var(--mut)}
+.pc em.sell{background:var(--gb);color:var(--grn)}
+.sb{flex:none;display:flex!important;flex-direction:column;align-items:center;justify-content:center;min-width:76px;padding:7px 10px;border-radius:14px;line-height:1.15}
+.sb b{font-size:20px;font-variant-numeric:tabular-nums}.sb small{font-size:11.5px;font-weight:600;margin-top:2px;white-space:nowrap}
+.sb.ok{background:var(--gb);color:var(--grn)}.sb.low{background:#FFF3D6;color:#8A5A00}.sb.out{background:var(--bg);color:var(--mut)}.sb.neg{background:var(--rb);color:var(--red)}
+.list .row>span.red,.list .row>span.grn{padding:6px 12px;border-radius:12px;font-size:17px!important;white-space:nowrap}
+.list .row>span.red{background:var(--rb)}.list .row>span.grn{background:var(--gb)}
+small.hl{display:block;color:var(--mut);font-size:13.5px;font-weight:400;margin-top:1px}
+#items{padding:4px 0}
+.it{display:block;padding:12px 14px}
+.it+.it{border-top:1px solid var(--ln2)}
+.it-h{display:flex;align-items:center;gap:12px}
+.it-h .av{width:38px;height:38px;font-size:17px}
+.it-n{flex:1;min-width:0}.it-n b{display:block;font-size:17.5px}.it-n small{font-size:13px;color:var(--mut)}.it-n small.neg{color:var(--red);font-weight:600}
+.it-x{flex:none;width:36px;height:36px;border-radius:50%;border:0;background:var(--rb);color:var(--red);font-size:22px;line-height:1;cursor:pointer}
+.it-f{display:flex;align-items:flex-end;gap:6px;margin-top:10px}
+.it-b{flex:1;min-width:0;margin:0!important;display:block}
+.it-b span{display:block;font-size:12px;font-weight:600;color:var(--mut);margin:0 0 3px 4px}
+.it-b input{width:100%;min-height:48px;text-align:center;font-size:19px;font-weight:700;background:var(--mint);border:1.5px solid var(--mint2);border-radius:12px;padding:6px 4px}
+.it-o{flex:none;font-size:18px;font-weight:700;color:var(--mut);padding-bottom:12px}
+.it-t{flex:1.15;min-width:0;text-align:center;background:var(--gb);border-radius:12px;padding:5px 4px;min-height:48px;display:flex;flex-direction:column;justify-content:center}
+.it-t span{font-size:11.5px;font-weight:600;color:var(--grn)}.it-t b{font-size:15.5px;color:var(--grn);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ck-t{display:flex;flex-direction:column;line-height:1.35}.ck-t b{font-size:17px}.ck-t small{font-size:13.5px;font-weight:400;color:var(--mut)}
+label:has(> input[type=checkbox]:checked) .ck-t small{color:var(--red)}
+
+/* ===== ভাষা বাছাই ===== */
+#langpick{position:fixed;inset:0;z-index:50;background:linear-gradient(160deg,#0F5E59,#178178);display:flex;align-items:center;justify-content:center;padding:20px}
+.lp-c{background:var(--sf);color:var(--ink);border-radius:24px;padding:28px 22px 20px;width:100%;max-width:400px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.lp-c h1{font-size:26px;margin:16px 0 0}.lp-c>p{margin:2px 0 18px;color:var(--mut);font-size:16px}
+.lp-b{display:flex;align-items:center;gap:14px;width:100%;margin-top:12px;padding:14px 16px;border:2px solid var(--mint2);background:var(--mint);border-radius:16px;font-family:inherit;color:var(--ink);text-align:left;cursor:pointer}
+.lp-b:active{border-color:var(--br2)}
+.lp-f{flex:none;width:48px;height:48px;border-radius:14px;background:var(--br);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700}
+.lp-b b{display:block;font-size:20px}.lp-b small{color:var(--mut);font-size:14px}
+.lp-n{margin:16px 0 0!important;font-size:13px!important;color:var(--mut)}
+.lc{display:grid!important;grid-template-columns:1fr 1fr;gap:10px;padding:12px!important}
+.lc button{border:2px solid var(--ln2);background:var(--sf);border-radius:14px;padding:10px;font-family:inherit;color:var(--ink);cursor:pointer}
+.lc button b{display:block;font-size:18px}.lc button small{color:var(--mut);font-size:13px}
+.lc button.on{border-color:var(--br);background:var(--mint);box-shadow:0 0 0 3px rgba(23,129,120,.15)}
+
+/* ===== বিলের ভাষা ===== */
+.blh{margin:4px 0 0;font-size:14px;font-weight:600;color:var(--mut)}
+.blb{min-height:48px;display:flex!important;align-items:center;justify-content:center;font-size:16px}
+
+/* ===== রেজিস্ট্রেশন ===== */
+#regbox{position:fixed;inset:0;z-index:40;background:rgba(10,40,38,.55);display:flex;align-items:flex-end;justify-content:center;padding:12px;overflow-y:auto}
+.rg-c{background:var(--sf);border-radius:22px;padding:18px 18px 16px;width:100%;max-width:520px;margin:auto 0;box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+.rg-top{display:flex;align-items:center;gap:12px;margin-bottom:4px}.rg-top img{border-radius:14px}.rg-top b{font-size:22px}.rg-top p{margin:0;color:var(--mut);font-size:15px}
+.rg-ph{display:flex;gap:8px}.rg-ph span{flex:none;display:flex;align-items:center;padding:0 14px;border-radius:12px;background:var(--mint);color:var(--br);font-weight:700;font-size:17px;border:1px solid var(--mint2)}.rg-ph input{flex:1;min-width:0}
+.rg-n{margin:10px 0 0;font-size:13.5px;color:var(--mut)}
+
+/* ===== সাহায্য ===== */
+.brand{display:flex;align-items:center;gap:12px}
+#helpb{margin-left:auto;flex:none;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:60px;height:56px;border-radius:16px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);color:#fff;font-family:inherit;cursor:pointer;position:relative;z-index:1}
+#helpb span{font-size:22px;line-height:1}#helpb small{font-size:12px;font-weight:600}
+#helpb:active{background:rgba(255,255,255,.25)}
+.hc{display:flex!important;align-items:center;gap:12px;padding:14px 16px!important}
+.hc-i{flex:none;width:46px;height:46px;border-radius:14px;background:var(--gb);display:flex;align-items:center;justify-content:center;font-size:22px}
+.hc b{font-size:17px}.hc p{margin:2px 0 0;font-size:14px}
+
+/* ===== রিপোর্ট নিচের অংশ ===== */
+.h2c{font-size:13px;font-weight:700;background:var(--rb);color:var(--red);padding:1px 9px;border-radius:10px;margin-left:4px}
+.lt-d{display:inline-block;margin-top:4px;font-size:12.5px;font-weight:600;color:#8A5A00;background:#FFF3D6;padding:1px 9px;border-radius:9px}
+.okc{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#E5F4EA,#D6EDDF);border-radius:16px;padding:16px;box-shadow:var(--sh)}
+.okc-i{flex:none;width:46px;height:46px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:22px}
+.okc b{font-size:16.5px;color:var(--grn)}.okc p{margin:2px 0 0;font-size:14px;color:#2F5F49}
+.bz{padding:14px 16px 18px!important}.bz-t{font-size:14.5px;margin:0 0 4px}
+.bz-pv{margin:10px 0 6px;background:#D9FDD3;border-radius:12px;padding:10px 12px;box-shadow:0 1px .5px rgba(0,0,0,.12);color:#111;line-height:1.4}
+.bz-pl{margin:0 0 4px!important;font-size:11.5px;font-weight:700;color:#4F7A5A;letter-spacing:.3px}
+.bz-pv b{display:block;font-size:15.5px;word-break:break-word}.bz-pv i{display:block;font-size:13.5px;color:#333}.bz-pv i:empty{display:none}
+.bz-ln{display:block;height:2px;background:#222;width:60%;margin:6px 0;border-radius:1px}.bz-pv small{display:block;font-style:italic;font-size:13px;color:#444}
+.fi{display:flex;align-items:center;gap:0;background:var(--sf);border:1px solid var(--ln2);border-radius:12px;overflow:hidden}
+.fi:focus-within{border-color:var(--br2);box-shadow:0 0 0 3px rgba(23,129,120,.18)}
+.fi-i{flex:none;width:46px;align-self:stretch;display:flex;align-items:center;justify-content:center;background:var(--mint);font-size:18px}
+.fi input{border:0!important;box-shadow:none!important;border-radius:0!important;flex:1;min-width:0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .okc{background:var(--mint)}:root:not([data-theme="light"]) .okc b,:root:not([data-theme="light"]) .okc p{color:var(--ink)}}
+
+/* ===== অ্যাকাউন্ট মোছা ===== */
+.acl{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:14px 0 6px;padding-top:12px;border-top:1px solid var(--ln2)}
+.acl a{color:var(--br2);font-weight:600;font-size:14.5px;text-decoration:none}
+.acl button{background:none;border:0;color:var(--red);font:600 14.5px inherit;font-family:inherit;cursor:pointer;padding:6px 0}
+#delbox{position:fixed;inset:0;z-index:45;background:rgba(40,10,10,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.dl-c{background:var(--sf);border-radius:22px;padding:22px 18px 18px;width:100%;max-width:440px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.dl-i{width:60px;height:60px;margin:0 auto;border-radius:18px;background:var(--rb);display:flex;align-items:center;justify-content:center;font-size:30px}
+
+/* ===== ইন-অ্যাপ ব্রাউজার ও ইনস্টল সাহায্য ===== */
+#st{transition:opacity .4s}
+.iab{margin-top:16px;text-align:left;background:#FFF6E0;border:1px solid #F2D58A;border-radius:14px;padding:14px}
+.iab b{color:#8A5A00;font-size:16.5px}.iab p{margin:6px 0 0;font-size:15px;color:#5A4300}
+.iab-s{font-size:13.5px!important;color:var(--mut)!important;margin-top:10px!important}
+.ih{margin-top:14px;text-align:left;background:var(--mint);border-radius:12px;padding:10px 14px}
+.ih summary{font-weight:600;color:var(--br);cursor:pointer;font-size:15px}
+.ih ol{margin:8px 0 0;padding-left:20px;font-size:14.5px}.ih li{margin:4px 0}
+
+.lp-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lp-row .lp-b{margin-top:0;flex-direction:column;text-align:center;gap:6px;padding:12px 8px}
+.lp-row .lp-b small{display:block}
+.lp-b.on{border-color:var(--br);background:#fff;box-shadow:0 0 0 3px rgba(23,129,120,.2)}
+.lp-g{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;margin-top:16px;min-height:54px;border-radius:14px;border:1px solid #DADCE0;background:#fff;color:#1F1F1F;font:600 17px inherit;font-family:inherit;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.lp-g:active{background:#F1F3F4}
+.lp-e{color:var(--red)!important;font-size:14px!important;margin:8px 0 0!important}
+.lp-pp a{color:var(--br2);font-weight:600}
+.hub-hi{margin:4px 2px 0;font-size:15px;color:var(--mut)}
+.hub-g{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.hub-i{background:#fff;border:1px solid var(--ln2);border-radius:18px;padding:16px 6px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:var(--sh);font:700 15px inherit;font-family:inherit;color:var(--ink);cursor:pointer;min-height:124px;text-align:center;line-height:1.25}
+.hub-i:active{transform:scale(.97);background:var(--mint)}
+.hub-i small{display:block;font-weight:500;font-size:12.5px;color:var(--mut);margin-top:2px}
+.hub-ic{width:60px;height:60px;border-radius:18px;display:flex;align-items:center;justify-content:center;background:var(--mint)}
+.hub-ic svg{width:32px;height:32px;fill:none;stroke:var(--br);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hub-ic.lg{background:none}.hub-ic.lg img{width:60px;height:60px;border-radius:16px;display:block;box-shadow:0 2px 8px rgba(15,94,89,.25)}
+.hub-ic.g{background:#FFF4DA}.hub-ic.g svg{stroke:#9A6B00}
+.hub-ic.b{background:#E8F0FB}.hub-ic.b svg{stroke:#2A5DA8}
+.hub-note{text-align:center;color:var(--mut);font-size:14px;margin-top:16px}
+.pl-i{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--ln2)}
+.pl-i:last-child{border-bottom:0}
+.pl-i .hub-ic{width:48px;height:48px;border-radius:14px;flex:none}.pl-i .hub-ic svg{width:26px;height:26px}
+.pl-i div{flex:1;min-width:0}.pl-i small{display:block;color:var(--mut);font-size:13.5px}
+.pl-s{flex:none;font-size:12.5px;font-weight:700;color:#8A5A00;background:#FFF4DA;border-radius:999px;padding:4px 10px}
+.pl-b{width:100%;background:none;border:0;border-bottom:1px solid var(--ln2);font:inherit;color:inherit;text-align:left;cursor:pointer}
+.pl-b:active{background:var(--mint)}
+.pl-go{flex:none;font-size:28px;color:var(--br2);line-height:1;padding-right:4px}
+.cd-in{font-size:20px!important;letter-spacing:1px;text-transform:uppercase}
+.cd-st{margin:0;padding-left:0;list-style:none;counter-reset:c}
+.cd-st li{counter-increment:c;position:relative;padding:8px 0 8px 40px;font-size:15.5px;line-height:1.45;border-bottom:1px dashed var(--ln2)}
+.cd-st li:last-child{border-bottom:0}
+.cd-st li:before{content:counter(c);position:absolute;left:0;top:7px;width:28px;height:28px;border-radius:50%;background:#FFF4DA;color:#8A5A00;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px}
+.bk-pill{display:inline-flex;align-items:center;gap:8px;margin:2px 0 12px;padding:6px 16px 6px 6px;border-radius:999px;border:1px solid var(--ln2);background:var(--sf);box-shadow:var(--sh);font:600 15px inherit;font-family:inherit;color:var(--br);cursor:pointer}
+.bk-pill:active{transform:scale(.97)}
+.bk-c{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--br),var(--br2));display:flex;align-items:center;justify-content:center;flex:none}
+.bk-c svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.ap-ic{width:60px;height:60px;border-radius:18px;display:flex;align-items:center;justify-content:center;flex:none;position:relative;overflow:hidden;box-shadow:0 6px 14px -4px var(--apsh,rgba(15,94,89,.35)),inset 0 1px 0 rgba(255,255,255,.35)}
+.ap-ic:after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.28) 0%,rgba(255,255,255,0) 45%)}
+.ap-ic svg{width:34px;height:34px;position:relative;z-index:1}
+.ap-gold{background:linear-gradient(140deg,#F6C453 0%,#E39A1E 55%,#C9761A 100%);--apsh:rgba(201,118,26,.45)}
+.ap-blue{background:linear-gradient(140deg,#5B9BFF 0%,#2F6FE0 55%,#1D4FB0 100%);--apsh:rgba(29,79,176,.45)}
+.ap-teal{background:linear-gradient(140deg,#2BB3A3 0%,#178178 55%,#0F5E59 100%);--apsh:rgba(15,94,89,.45)}
+.ap-indigo{background:linear-gradient(140deg,#8B8CF7 0%,#5B5BE0 55%,#3F3FB8 100%);--apsh:rgba(63,63,184,.4)}
+.ap-rose{background:linear-gradient(140deg,#FF7C8E 0%,#E8455C 55%,#C02A42 100%);--apsh:rgba(192,42,66,.42)}
+.hub-ic.lg img{width:60px;height:60px;border-radius:18px;display:block;box-shadow:0 6px 14px -4px rgba(15,94,89,.45)}
+.hub-i{background:var(--sf)!important}
+.soon-b{display:flex;align-items:center;gap:12px;margin-top:16px;padding:14px 16px;border-radius:16px;border:1.5px dashed #E7B53C;background:linear-gradient(135deg,rgba(231,181,60,.12),rgba(23,129,120,.08))}
+.soon-b .sp{width:40px;height:40px;border-radius:12px;background:linear-gradient(140deg,#F6C453,#E39A1E);display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 4px 10px -3px rgba(201,118,26,.5)}
+.soon-b .sp svg{width:22px;height:22px;fill:#fff}
+.soon-b b{display:block;font-size:15.5px}.soon-b small{display:block;color:var(--mut);font-size:13px;margin-top:1px}
+.pg-hero{position:relative;overflow:hidden;border-radius:20px;padding:18px;color:#fff;display:flex;align-items:center;gap:14px;margin-bottom:14px;box-shadow:0 10px 24px -10px var(--apsh,rgba(15,94,89,.5))}
+.pg-hero:before{content:"";position:absolute;right:-30px;top:-40px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.12)}
+.pg-hero:after{content:"";position:absolute;right:40px;bottom:-60px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.08)}
+.pg-hero .ap-ic{width:58px;height:58px;background:rgba(255,255,255,.18)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+.pg-hero h1{color:#fff;margin:0;font-size:24px;line-height:1.25}
+.pg-hero p{margin:3px 0 0;font-size:14.5px;color:rgba(255,255,255,.9)}
+.pg-hero .chip{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.2);font-size:12.5px;font-weight:600}
+.pg-hero>div{position:relative;z-index:1;min-width:0}
+.pl-i .ap-ic{width:50px;height:50px;border-radius:15px}.pl-i .ap-ic svg{width:27px;height:27px}
+.pl-go{width:34px!important;height:34px;border-radius:50%;background:var(--mint);display:flex!important;align-items:center;justify-content:center;padding:0!important}
+.pl-go svg{width:16px;height:16px;fill:none;stroke:var(--br);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.pl-s{display:inline-flex!important;align-items:center;gap:4px;background:linear-gradient(135deg,#FFF6DF,#FDE6AE)!important;border:1px solid #F1CF7A;color:#8A5A00!important}
+.pl-s svg{width:13px;height:13px;fill:none;stroke:#8A5A00;stroke-width:2.4;stroke-linecap:round}
+.pl-off .ap-ic{filter:saturate(.55);opacity:.8}.pl-off b{opacity:.75}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bk-pill{color:#7FD6CB} :root:not([data-theme="light"]) .pl-go{background:rgba(127,214,203,.14)} :root:not([data-theme="light"]) .pl-go svg{stroke:#7FD6CB}}
+:root[data-theme="dark"] .bk-pill{color:#7FD6CB} :root[data-theme="dark"] .pl-go{background:rgba(127,214,203,.14)} :root[data-theme="dark"] .pl-go svg{stroke:#7FD6CB}
+.tohub{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<header class="brand"><img src='icon-192.png' width='52' height='52' alt='গণনা খাতা লোগো' style='flex:none;border-radius:12px'><div><b style='font-size:23px;line-height:1.2;display:block'>গণনা খাতা</b><small class='mut' style='font-size:14px'>বাকি, স্টক ও লাভের হিসাব</small></div><button id='helpb' data-act='help' style='display:none' aria-label='সাহায্য'><span>🎧</span><small>সাহায্য</small></button></header>
+<div id="st" class="st">লোড হচ্ছে...</div>
+<main id="app"></main>
+<nav id="nav">
+<button data-tab="home"><svg class="ni" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg><span>হোম</span></button>
+<button data-tab="clients"><svg class="ni" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.8a3.3 3.3 0 0 1 0 6.4"/><path d="M18.5 14.8c1.7.8 2.8 2.5 3 5.2"/></svg><span>ক্লায়েন্ট</span></button>
+<button data-tab="add"><svg class="ni" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>নতুন এন্ট্রি</span></button>
+<button data-tab="stock"><svg class="ni" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/></svg><span>স্টক</span></button>
+<button data-tab="report"><svg class="ni" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"/><rect x="5.5" y="11" width="3" height="6" rx="1"/><rect x="10.5" y="7" width="3" height="10" rx="1"/><rect x="15.5" y="4" width="3" height="13" rx="1"/></svg><span>রিপোর্ট</span></button>
+</nav>
+<div id="toast" role="status"></div>
+<script>
+/* ===== ভাষা (বাংলা / English) ===== */
+var LANG=(function(){try{return localStorage.getItem('bk-lang')||''}catch(e){return ''}})();
+(function(){
+ if(LANG==='en'){document.documentElement.lang='en';
+  const NL=Number.prototype.toLocaleString;Number.prototype.toLocaleString=function(l,o){return NL.call(this,l==='bn-BD'?'en-US':l,o)};
+  const DL=Date.prototype.toLocaleDateString;Date.prototype.toLocaleDateString=function(l,o){return DL.call(this,l==='bn-BD'?'en-GB':l,o)};
+  const EN={"⚠️ এই পাতাটা অন্য অ্যাপের ভেতরে খুলেছে": "⚠️ This page opened inside another app", "🌐 Chrome-এ খুলুন": "🌐 Open in Chrome", "📋 লিংক কপি করুন": "📋 Copy link", "📲 ফোনে অ্যাপ হিসেবে কীভাবে রাখবেন?": "📲 How to add it to your phone as an app?", "বাছাই করুন": "choose", "চাপুন": "tap", "লিংক কপি হয়েছে। এবার Chrome খুলে পেস্ট করুন": "Link copied. Now open Chrome and paste it", "এখানে Google লগইন আর ইনস্টল কাজ করে না। দয়া করে Chrome-এ খুলুন।": "Google login and install don't work here. Please open it in Chrome.", "এখানে Google লগইন আর ইনস্টল কাজ করে না। দয়া করে Safari-এ খুলুন।": "Google login and install don't work here. Please open it in Safari.", "না খুললে: উপরে ডানে ⋮ চেপে \"Open in Chrome\" বা \"ব্রাউজারে খুলুন\" বাছাই করুন।": "If it doesn't open: tap ⋮ at the top right and choose \"Open in Chrome\".", "উপরে ডানে ••• বা ↗ চিহ্ন চেপে \"Open in Safari\" বাছাই করুন।": "Tap ••• or ↗ at the top right and choose \"Open in Safari\".", "অন্য ব্রাউজারে (Mi, Opera ইত্যাদি) না হলে Chrome দিয়ে খুলুন।": "If it doesn't work in other browsers (Mi, Opera etc.), use Chrome.","গোপনীয়তা নীতি": "Privacy Policy", "🔒 গোপনীয়তা নীতি": "🔒 Privacy Policy", "🗑️ অ্যাকাউন্ট মুছে ফেলুন": "🗑️ Delete account", "অ্যাকাউন্ট মুছে ফেলবেন?": "Delete your account?", "এতে আপনার": "This will permanently delete", "সব ক্লায়েন্ট, লেনদেন, স্টক আর প্রোফাইল": "all your customers, transactions, stock and profile", "চিরদিনের জন্য মুছে যাবে। আর ফেরত আনা যাবে না।": ". It cannot be undone.", "চাইলে আগে নিচের \"ব্যাকআপ কপি করুন\" দিয়ে একটা কপি রেখে দিন।": "If you want, first keep a copy using \"Copy backup\".", "নিশ্চিত করতে নিচে": "To confirm, type", "লিখুন": "below", "মুছে ফেলুন": "Delete", "নিশ্চিত করতে DELETE লিখুন": "Type DELETE to confirm", "মুছে ফেলা হচ্ছে...": "Deleting...", "আপনার অ্যাকাউন্ট আর সব হিসাব মুছে ফেলা হয়েছে।": "Your account and all records have been deleted.", "মালিকের অ্যাকাউন্ট এখান থেকে মোছা যাবে না": "The owner account can't be deleted here", "লগইন করলে আপনি আমাদের": "By logging in you agree to our", "মেনে নিচ্ছেন।": ".","নিরাপদে সংরক্ষিত": "Saved securely", "দারুণ! সবাই নিয়মিত টাকা দিচ্ছে": "Great! Everyone is paying on time", "৩০ দিনের বেশি কারো টাকা বাকি পড়ে নেই।": "No one has been unpaid for over 30 days.", "বিলে যেমন দেখাবে": "How it looks on bills", "💾 সংরক্ষণ করুন": "💾 Save", "যেমন: 60123456789": "e.g. 60123456789","সাহায্য": "Help", "আসসালামু আলাইকুম": "Assalamu Alaikum", "আমাদের সেবাসমূহ": "Our services", "বাকি ও স্টকের হিসাব": "Dues & stock accounts", "প্রবাস লিংক": "Probash Link", "ডিজিটাল সেবা": "Digital services", "হোয়াটসঅ্যাপে": "On WhatsApp", "নতুন সেবা শীঘ্রই যোগ হবে": "More services coming soon", "← সব সেবা": "← All services", "প্রবাসীদের ডিজিটাল সেবা": "Digital services for expats", "শীঘ্রই আসছে": "Coming soon", "সব সেবা": "All services", "সরকারি সাইট · নিরাপদ": "Official site · Safe", "প্রবাসীদের জন্য আরও সুবিধা আসছে": "More features for expats are on the way", "সার্টিফিকেট লাগলে": "Need the certificate?", "এই পেজে শুধু স্ট্যাটাস দেখা যায়। প্রিন্ট করার সার্টিফিকেট (Perakuan) লাগলে আপনার কোম্পানি বা এজেন্টের কাছে চান।": "This page only shows the status. For the printable certificate (Perakuan), ask your company or agent.", "💡 Chrome \"Save passport\" জানতে চাইলে": "💡 If Chrome asks to \"Save passport\", tap", "চাপুন, যাতে নম্বর ফোনে সেভ না থাকে।": "so the number is not saved on the phone.", "FOMEMA মেডিকেলে পাস না ফেল, মেয়াদ কবে পর্যন্ত": "FOMEMA medical: pass or fail, valid until when", "📋 কপি করে মেডিকেল সাইট খুলুন": "📋 Copy & open medical site", "নম্বরটা কপি হয়ে যাবে, তারপর ইমিগ্রেশনের সরকারি সাইট খুলবে।": "The number will be copied, then the official Immigration site will open.", "সবুজ বোতাম চাপুন। ইমিগ্রেশনের সাইট খুলবে, লোড হতে একটু সময় লাগতে পারে।": "Tap the green button. The Immigration site will open; it may take a moment to load.", "প্রথম ঘর (Passport No.) চেপে ধরে রাখুন, তারপর Paste চাপুন।": "Press and hold the first box (Passport No.), then tap Paste.", "পাশের তালিকা থেকে দেশ BANGLADESH বাছাই করুন।": "Choose your country (e.g. BANGLADESH) from the list beside it.", "Search বোতাম চাপুন।": "Tap the Search button.", "ফলাফলের টেবিল বড় হলে আঙুল দিয়ে ডানে-বামে সরিয়ে দেখুন।": "If the result table is wide, swipe left and right to see it all.", "মেডিকেলের তারিখ": "Medical exam date", "রিপোর্টের মেয়াদ শেষ": "Report valid until", "পাস ✅": "Pass ✅", "ফেল ❌": "Fail ❌", "রিপোর্ট যাচাই চলছে": "Report under review", "মেয়াদ শেষ": "Expired", "এখানে সাধারণত শুধু সর্বশেষ মেডিকেলের ফলাফল দেখায়। রেকর্ড না পেলে নম্বর আর দেশ ঠিক আছে কিনা দেখুন, তারপর আপনার কোম্পানির সাথে কথা বলুন।": "Usually only the latest medical result is shown. If no record is found, check the number and country, then contact your company.", "সব তথ্য সরাসরি সরকারি সাইট থেকে দেখবেন। আপনার পাসপোর্ট নম্বর আমরা কোথাও সংরক্ষণ করি না।": "You check everything directly on the official site. We never store your passport number.", "সাইটে দুইটা গোল বৃত্ত আছে। নিচের দ্বিতীয় বৃত্তটা (পাসপোর্ট) চাপুন।": "The site shows two round options. Tap the second one (passport).", "সার্চ ঘরে আঙুল চেপে ধরে রাখুন, তারপর Paste চাপুন।": "Press and hold the search box, then tap Paste.", "সবুজ Carian বোতাম চাপুন।": "Tap the green Carian (search) button.", "ফলাফলের মানে": "What the result means", "আর কত দিন মেয়াদ আছে": "Days left", "মেয়াদ শেষের তারিখ": "Registration end date", "কার্ড প্রিন্ট হয়েছে": "Card printed", "কার্ড পাঠানোর পথে": "Card being delivered", "কুরিয়ার ট্র্যাকিং নম্বর": "Courier tracking number", "রেকর্ড পাওয়া না গেলে": "If no record is found", "দ্বিতীয় বৃত্ত (পাসপোর্ট) বাছাই করেছেন কিনা আর নম্বর ঠিক আছে কিনা দেখুন। পাসপোর্ট নবায়ন করে থাকলে পুরনো পাসপোর্ট নম্বর দিয়েও চেষ্টা করুন। তারপরও না পেলে আপনার কোম্পানি বা এজেন্টের সাথে কথা বলুন।": "Check that you chose the second option (passport) and the number is correct. If you renewed your passport, also try the old passport number. If still not found, contact your company or agent.", "← প্রবাস লিংক": "← Probash Link", "কার্ড বৈধ আছে কিনা, মেয়াদ কবে শেষ": "Is the card valid, when does it expire", "পাসপোর্ট নম্বর": "Passport number", "যেমন: A01234567": "e.g. A01234567", "📋 কপি করে CIDB সাইট খুলুন": "📋 Copy & open CIDB site", "নম্বরটা কপি হয়ে যাবে, তারপর CIDB-এর সরকারি সাইট খুলবে।": "The number will be copied, then the official CIDB site will open.", "কীভাবে চেক করবেন": "How to check", "উপরের ঘরে আপনার পাসপোর্ট নম্বর লিখুন।": "Type your passport number in the box above.", "সবুজ বোতাম চাপুন। CIDB-এর সাইট খুলবে।": "Tap the green button. The CIDB site will open.", "সাইটের নম্বর লেখার ঘরে আঙুল চেপে ধরে রাখুন, তারপর Paste চাপুন।": "On the site, press and hold the number box, then tap Paste.", "Submit বোতাম চাপুন।": "Tap the Submit button.", "ফলাফলে নাম, কার্ডের স্ট্যাটাস আর মেয়াদ শেষের তারিখ দেখাবে।": "The result shows the name, card status and expiry date.", "সাইট না খুললে বা ধীরে চললে সেটা CIDB-এর সার্ভারের সমস্যা, কিছুক্ষণ পরে আবার চেষ্টা করুন। আপনার পাসপোর্ট নম্বর আমরা কোথাও সংরক্ষণ করি না।": "If the site does not open or is slow, it is a CIDB server problem; try again later. We never store your passport number.", "আগে পাসপোর্ট নম্বর লিখুন": "Type the passport number first", "নম্বরে শুধু ইংরেজি অক্ষর আর সংখ্যা থাকবে": "Use only English letters and numbers", "CIDB কার্ড চেক": "CIDB card check", "কার্ড বৈধ আছে কিনা দেখুন": "See if the card is valid", "ভিসা / পারমিট চেক": "Visa / permit check", "মালয়েশিয়া ইমিগ্রেশন": "Malaysia Immigration", "মেডিকেল চেক": "Medical check", "FOMEMA মেডিকেল স্ট্যাটাস": "FOMEMA medical status", "সব তথ্য সরাসরি সরকারি অফিসিয়াল ওয়েবসাইট থেকে দেখবেন। আপনার পাসপোর্ট নম্বর আমরা কোথাও সংরক্ষণ করি না।": "You check everything directly on the official government website. We never store your passport number.", "সাহায্য ও যোগাযোগ": "Help & contact", "কোনো সমস্যা বা প্রশ্ন?": "Any problem or question?", "হোয়াটসঅ্যাপে মেসেজ দিন, আমরা সাহায্য করব।": "Message us on WhatsApp and we'll help.", "💬 মেসেজ": "💬 Message", "সাহায্যের নম্বর এখনো দেওয়া হয়নি": "Help number not set yet","আপনার তথ্য দিয়ে রেজিস্ট্রেশন করুন": "Register with your details", "আপনার নাম": "Your name", "ব্যবসার / দোকানের নাম": "Business / shop name", "দেশ": "Country", "মোবাইল / হোয়াটসঅ্যাপ নম্বর": "Mobile / WhatsApp number", "🔒 আপনার তথ্য সম্পূর্ণ নিরাপদ ও গোপন থাকবে।": "🔒 Your information will be kept completely safe and private.", "রেজিস্ট্রেশন সম্পন্ন করুন": "Complete registration", "পরে করব": "Later", "আপনার নাম লিখুন": "Enter your name", "সঠিক মোবাইল নম্বর লিখুন": "Enter a valid mobile number", "রেজিস্ট্রেশন সম্পন্ন হয়েছে। ধন্যবাদ!": "Registration complete. Thank you!", "আমার প্রোফাইল": "My profile", "ব্যবসা": "Business", "নম্বর": "Number", "এখনো রেজিস্ট্রেশন করা হয়নি।": "Not registered yet.", "✏️ তথ্য বদলান": "✏️ Edit details", "📝 রেজিস্ট্রেশন করুন": "📝 Register", "📱 নম্বর দেয়নি": "📱 No number given","বাংলায় পাঠান": "Send in Bangla", "📲 হোয়াটসঅ্যাপে বিল পাঠান": "📲 Send bill on WhatsApp", "বিল:": "Bill:", "বাংলা": "বাংলা","লিখলে প্রত্যেকের নিজের নাম বসে যাবে।": "is replaced with each person's own name.","🛒 মোট বিক্রি": "🛒 Total sales", "✅ টাকা আদায়": "✅ Collected", "📈 লাভ": "📈 Profit", "📝 বাকিতে দেওয়া": "📝 On credit", "মাল দেওয়া সংরক্ষণ করুন": "Save credit sale", "টাকা পাওয়া সংরক্ষণ করুন": "Save payment", "এর কাছে পাওনা": "Amount due", "ভাষা / Language": "Language", "ইংরেজি": "","অগ্রিম": "Advance", "অগ্রিম জমা": "Advance paid", "অথবা অ্যাকাউন্টে পাঠান": "Or send to account", "অনেক দিন মাল নেয়নি": "Haven't ordered in a while", "অন্তত অ্যাকাউন্ট নম্বর বা QR-এর ছবি দিন": "Add at least an account number or a QR image", "অন্য মাল বেছে নিন": "Choose another product", "অফার": "Offer", "অ্যাকাউন্ট": "Account", "অ্যাকাউন্ট নম্বর": "Account number", "অ্যাকাউন্টের ধরন:": "Account type:", "অ্যাকাউন্টের নাম": "Account name", "অ্যাপ চালু হয়নি। ইন্টারনেট সংযোগ দেখে আবার খুলুন।": "App didn't start. Check your internet and open it again.", "আগে ক্লায়েন্টের হোয়াটসঅ্যাপ নম্বর যোগ করুন": "Add the customer's WhatsApp number first", "আগে নাম লিখুন": "Enter a name first", "আগে মালের নাম লিখুন": "Enter the product name first", "আগে মেসেজ লিখুন": "Write a message first", "আগের বাকি:": "Previous due:", "আগের মাস": "Previous month", "আগের হিসাব, আজকের মাল নয়": "Earlier balance, not today's goods", "আজ": "Today", "আজকের বিক্রি": "Today's sales", "আজকের লাভ": "Today's profit", "আজকের হিসাব": "Today's summary", "আপনার তথ্য আপনার জিমেইল অ্যাকাউন্টের নামে অনলাইনে জমা থাকে, আর ফোনেও একটা কপি থাকে। তবু মাঝেমধ্যে ব্যাকআপ কপি করে নিজের হোয়াটসঅ্যাপ বা নোটে রেখে দিন।": "Your data is stored online under your Gmail account, with a copy on your phone. Still, now and then copy a backup and keep it in your WhatsApp or notes.", "আপনার মেয়াদ:": "Your plan:", "আপনার হিসাব নিরাপদে রাখতে জিমেইল দিয়ে লগইন করুন। প্রত্যেকের খাতা আলাদা থাকে, অন্য কেউ দেখতে পারে না।": "Log in with Gmail to keep your records safe. Every account is separate and private.", "আমিরাত": "UAE", "ইনস্টল": "Install", "ইন্দোনেশিয়া": "Indonesia", "এই ঘর শুধু আপনি দেখবেন। এখানে যা লিখবেন, কাস্টমার পেমেন্ট পাতায় সেটা দেখবে।": "Only you can see this box. Customers will see what you write here on their payment page.", "এই নামে কেউ নেই।": "No one found with that name.", "এই নামে কোনো মাল নেই।": "No product with that name.", "এই নামে কোনো মাল নেই। নিচে নতুন মাল যোগ করুন।": "No product with that name. Add a new one below.", "এই পাতা শুধু মালিকের জন্য।": "This page is for the owner only.", "এই ভাগে এখনো কেউ নেই।": "No one in this group yet.", "এই ভাগে কেউ নেই।": "No one in this group.", "এই মাল তালিকা থেকে মুছুন": "Remove this product from the list", "এই মাস": "This month", "এই মাসের হিসাব": "This month's summary", "এই ৭ দিনে এখনো কোনো বিক্রি নেই।": "No sales in these 7 days yet.", "এক লাইনে পরিচয় (ইচ্ছা হলে)": "One-line tagline (optional)", "এখন কত পিস আছে / এসেছে": "How many pcs you have / received", "এখন কারো কাছে বাকি নেই।": "Nobody owes you right now.", "এখন পর্যন্ত": "so far", "এখন স্টকে আছে": "In stock now", "এখনো কোনো কাস্টমার লগইন করেনি।": "No customer has logged in yet.", "এখনো কোনো ক্লায়েন্ট নেই। উপরের বোতামে চেপে প্রথমজনকে যোগ করুন।": "No customers yet. Tap the button above to add your first one.", "এখনো কোনো ক্লায়েন্ট নেই। বাকিতে মাল দিলে প্রথমে ক্লায়েন্ট যোগ করুন।": "No customers yet. To sell on credit, add a customer first.", "এখনো কোনো নগদ বিক্রি নেই।": "No cash sales yet.", "এখনো কোনো মাল নেই। উপরের বোতামে চেপে প্রথম মাল যোগ করুন।": "No products yet. Tap the button above to add your first product.", "এখনো কোনো মাল নেই। নিচে নতুন প্রোডাক্ট বানান।": "No products yet. Create a new product below.", "এখনো কোনো মাল নেই। নিচে প্রথম মাল যোগ করুন।": "No products yet. Add your first product below.", "এখনো কোনো মাল যোগ হয়নি।": "No products added yet.", "এখনো কোনো লেনদেন নেই।": "No transactions yet.", "এখনো মাল নেয়নি": "No orders yet", "এখানে কেউ নেই।": "No one here.", "এখানে মেসেজ লিখুন, বা ওপরের একটা বেছে নিন": "Write a message here, or pick one above", "এগুলো লিখলে হোয়াটসঅ্যাপ বিলের ওপরে-নিচে আপনার ব্যবসার নাম দেখাবে।": "Fill these in to show your business name on WhatsApp bills.", "এটা পুরনো বাকি": "This is an old balance", "এন্ট্রি দেওয়ার আগে অন্তত একজন ক্লায়েন্ট যোগ করুন।": "Add at least one customer before making an entry.", "এন্ট্রি বদলান": "Edit entry", "এমন কেউ নেই।": "No one.", "এর মধ্যে পেইড": "Paid among them", "ওমান": "Oman", "কত টাকা পেলেন (RM)": "Amount received (RM)", "কত টাকা পেলেন সেটা লিখুন": "Enter the amount received", "কত পিস এসেছে": "Pcs received", "কত পিস এসেছে সেটা লিখুন": "Enter how many pcs arrived", "কত পিস দিলেন": "Pcs given", "কত পিস বিক্রি করলেন": "Pcs sold", "কত পিস বিক্রি করলেন লিখুন": "Enter pcs sold", "কত পিস বিক্রি হয়েছে": "Pcs sold", "কপি হয়নি, নম্বরটা হাতে লিখে নিন": "Couldn't copy, please write the number down", "কম আছে": "Low", "কাতার": "Qatar", "কাস্টমার": "Customers", "কুয়েত": "Kuwait", "কেনা": "Buy", "কেনা দাম": "Buy price", "কেনা দাম (প্রতি পিস)": "Buy price (per pc)", "কেনা দাম (প্রতি পিস, RM)": "Buy price (per pc, RM)", "কেনা দাম, প্রতি পিস (RM) — ইচ্ছা হলে": "Buy price per pc (RM) — optional", "কেনা দাম:": "Buy price:", "কোন ভাগে": "Group", "কোন মাল বিক্রি করলেন?": "Which product did you sell?", "ক্লাউডে সংরক্ষিত": "Saved to cloud", "ক্লাউডের সাথে সংযোগ হচ্ছে...": "Connecting to cloud...", "ক্লায়েন্ট": "Customers", "ক্লায়েন্ট বেছে নিন": "Choose a customer", "ক্লায়েন্ট যোগ করুন": "Add customer", "ক্লায়েন্ট সংরক্ষণ করুন": "Save customer", "খবর / অফার পাঠান": "Send news / offer", "খাতা ফিরে এসেছে": "Ledger restored", "খোঁজ নেওয়া": "Check in", "গত ৭ দিনের বিক্রি": "Last 7 days' sales", "চালু আছে": "Active", "ছবিটা খোলা গেল না, আরেকটা চেষ্টা করুন": "Couldn't open that image, try another", "জমা নিন": "Receive payment", "জিমেইল দিয়ে লগইন করুন": "Log in with Gmail", "টাকা আদায়": "Collected", "টাকা পাওয়া": "Payment", "টাকা পাওয়া গেছে": "Payments received", "টাকা পাঠানোর তথ্য (ইচ্ছা হলে)": "Payment details (optional)", "টাকা পাঠানোর পরে": "After paying", "টাকা পেলাম": "Got payment", "টাকা পেলেন?": "Got a payment?", "টাকার অঙ্ক (RM)": "Amount (RM)", "টাকার অঙ্ক সঠিকভাবে লিখুন": "Enter a valid amount", "ট্রায়াল": "Trial", "তথ্য বদলান": "Edit details", "তথ্য সংরক্ষিত হয়েছে": "Details saved", "তারিখ": "Date", "তারিখ নেই": "No date", "তালিকা আসছে...": "Loading list...", "তালিকা থেকে খুঁজুন": "Search the list", "তালিকায় নেই? নতুন প্রোডাক্ট বানান": "Not listed? Create a new product", "তালিকায় নেই? নতুন মাল যোগ করুন": "Not listed? Add a new product", "দাম (RM)": "Price (RM)", "দাম সংরক্ষণ করুন": "Save prices", "দাম সংরক্ষিত হয়েছে": "Prices saved", "দিন": "days", "ধন্যবাদ": "Thank you", "নগদ বিক্রি": "Cash sale", "নগদ বিক্রির লাভ": "Cash sale profit", "নতুন এন্ট্রি": "New entry", "নতুন ক্লায়েন্ট যোগ করুন": "Add new customer", "নতুন ছবি বেছে নেওয়া হয়েছে। সংরক্ষণ চাপুন।": "New image selected. Tap save.", "নতুন মাল": "New stock", "নতুন মাল এলে লিখুন": "Record new stock", "নতুন মাল যোগ করুন": "Add new product", "নম্বর কপি হয়েছে": "Number copied", "নম্বর নেই": "No number", "নম্বর লিখুন": "Enter number", "নম্বর সংরক্ষণ করুন": "Save number", "নম্বর সংরক্ষিত হয়েছে": "Number saved", "নম্বর:": "No.:", "নাম": "Name", "নাম ও দাম বদলান": "Edit name & prices", "নাম, এলাকা বা নম্বর দিয়ে খুঁজুন": "Search by name, area or number", "নিচের লেখা হাতে কপি করে নিন": "Copy the text below by hand", "নিয়মিত": "Regular", "নিয়মিত কাস্টমার, ১৪ দিনের বেশি কোনো অর্ডার নেই। একটা ফোন বা মেসেজ দিন।": "Regular customers with no order for 14+ days. Give them a call or message.", "নিশ্চিত? আবার চাপুন": "Sure? Tap again", "নেপাল": "Nepal", "নোট": "Note", "নোট (ইচ্ছা হলে)": "Note (optional)", "নোট থেকে মোট": "Total from note", "নোট থেকে মোট হয়": "Total from note", "পরিবর্তন সংরক্ষণ করুন": "Save changes", "পরিবর্তন সংরক্ষিত।": "Changes saved.", "পরের মাস": "Next month", "পর্যন্ত": "", "পাঠান": "Send", "পিস": "Pcs", "পিস আছে": "in stock", "পুরনো বাকি": "Old balance", "পুরনো বাকি আছে? (RM, না থাকলে ফাঁকা)": "Any old balance? (RM, leave empty if none)", "পুরনো সব হিসাব দেখতে পারবেন, কিন্তু নতুন কিছু লেখা বা বদলানো যাবে না। আবার চালু করতে পেমেন্ট করুন।": "You can still see all your records, but you can't add or change anything. Pay to reactivate.", "পেইড": "Paid", "পেমেন্ট তথ্য (কাস্টমারদের জন্য)": "Payment details (for customers)", "পেমেন্ট তথ্য সংরক্ষণ করুন": "Save payment details", "পেমেন্ট তথ্য সংরক্ষিত হয়েছে": "Payment details saved", "পেমেন্টের তথ্য এখনো দেওয়া হয়নি। একটু পরে আবার দেখুন।": "Payment details aren't set up yet. Please check again later.", "প্রতিটা মালের বাঁ ঘরে পিস, ডান ঘরে প্রতি পিসের দাম। ভুল হলে ঘরে চেপে ঠিক করে নিন।": "For each product: pieces on the left, price per piece on the right. Tap a box to fix a mistake.", "প্রোডাক্ট সংরক্ষণ করে যোগ করুন": "Save product and add", "ফিরে যান": "Back", "ফোনে অ্যাপ হিসেবে রাখুন": "Keep it on your phone as an app", "ফোনের তথ্য ক্লাউডে তোলা হচ্ছে...": "Uploading phone data to cloud...", "ফ্রি ট্রায়াল": "Free trial", "বদলান": "Edit", "বন্ধ করুন": "Close", "বাংলাদেশ": "Bangladesh", "বাকি, স্টক ও লাভের হিসাব": "Dues, stock & profit", "বাকিতে দেওয়া": "Given on credit", "গণনা খাতা": "Gonona Khata", "গণনা খাতা লোগো": "Gonona Khata logo", "বাতিল": "Cancel", "বাতিল করুন": "Cancel", "বাদ দিন": "Remove", "বাহরাইন": "Bahrain", "বিক্রি": "Sell", "বিক্রি সংরক্ষণ করুন": "Save sale", "বিক্রির দাম": "Sell price", "বিক্রির দাম (প্রতি পিস, RM)": "Sell price (per pc, RM)", "বিক্রির দাম লিখলে লাভ এখানে দেখাবে": "Enter the sell price to see the profit here", "বিক্রির দাম লিখুন": "Enter the sell price", "বিক্রির দাম, প্রতি পিস (RM)": "Sell price per pc (RM)", "বিল পাঠাতে এই ক্লায়েন্টের হোয়াটসঅ্যাপ নম্বর দিন (নিচে নম্বরের ঘর আছে)।": "Add this customer's WhatsApp number to send bills (box below).", "বিল পাঠান": "Send bill", "বিলে আপনার ব্যবসার তথ্য": "Your business info on bills", "বুধ": "Wed", "বৃহঃ": "Thu", "বেছে নিন": "Choose", "ব্যবসার তথ্য সংরক্ষিত হয়েছে। এখন থেকে বিলে দেখাবে।": "Business info saved. It will show on bills from now on.", "ব্যবসার নাম": "Business name", "ব্যাংক": "Bank", "ব্যাংক বা ই-ওয়ালেটের নাম": "Bank or e-wallet name", "ব্যাকআপ": "Backup", "ব্যাকআপ কপি করুন": "Copy backup", "ব্যাকআপ কপি হয়েছে": "Backup copied", "ব্যাকআপ থেকে ফিরিয়ে আনুন": "Restore from backup", "ব্যাকআপ ফিরিয়ে আনতে এখানে পেস্ট করুন": "Paste a backup here to restore", "ব্যাকআপের লেখাটি ঠিক নেই": "That backup text isn't valid", "ভারত": "India", "ভুল করে যোগ হলে বা এই মাল আর বিক্রি না করলে মুছে দিন। আগের বিক্রির হিসাব ঠিক থাকবে।": "Delete it if it was added by mistake or you no longer sell it. Past sales stay intact.", "মঙ্গল": "Tue", "মাঝে মাঝে": "Occasional", "মাল তালিকায় যোগ হয়েছে": "Product added to the list", "মাল দিলাম": "Gave goods", "মাল দিলে বা নগদ বিক্রি করলে এখানে দেখাবে।": "Credit sales and cash sales will show here.", "মাল দেওয়া": "goods given", "মাল যোগ করে বিক্রি লিখুন": "Add products and record the sale", "মাল সংরক্ষণ করুন": "Save product", "মাল-হিসাব মেলা বিক্রি থেকে": "from sales with item details", "মালটা তালিকা থেকে মুছে ফেলা হয়েছে": "Product removed from the list", "মালটা মুছে ফেলুন": "Delete this product", "মালয়েশিয়া": "Malaysia", "মালিক": "Owner", "মালের ঘর": "item rows", "মালের নাম": "Product name", "মালের নাম (বিক্রির নোটে যেভাবে লিখবেন)": "Product name (as you'd write it in a sale note)", "মালের নাম লিখুন": "Enter product name", "মালের নাম লিখে খুঁজুন": "Type a product name to search", "মালের স্টক": "Product stock", "মাসিক ফি": "Monthly fee", "মাসিক ফি (RM)": "Monthly fee (RM)", "মুছুন": "Delete", "মুছে ফেলা হয়েছে": "Deleted", "মেয়াদ শেষ": "Expired", "মেয়াদ শেষ। নতুন কিছু সংরক্ষণ করা যাবে না, পেমেন্ট করে আবার চালু করুন।": "Plan expired. Nothing new can be saved; pay to reactivate.", "মেয়াদ:": "Expires:", "মেসেজ লিখুন": "Write a message", "মোট": "Total", "মোট কাস্টমার": "Total customers", "মোট পাওনা": "Total receivable", "মোট বিক্রি": "Total sales", "মোট লাভ": "Total profit", "মোবাইল / হোয়াটসঅ্যাপ নম্বর (দেশের কোড সহ)": "Mobile / WhatsApp number (with country code)", "যুক্তরাজ্য": "UK", "যোগাযোগ নম্বর (ইচ্ছা হলে)": "Contact number (optional)", "রবি": "Sun", "রিপোর্ট": "Report", "রিফ্রেশ": "Refresh", "রিসিট পাঠানোর হোয়াটসঅ্যাপ নম্বর (দেশের কোড সহ)": "WhatsApp number for receipts (with country code)", "লগআউট": "Log out", "লগইন করা আছে:": "Logged in as:", "লাভ": "Profit", "লাভ হিসাবের জন্য": "for profit calculation", "লেনদেনের খাতা": "Transactions", "লোকেশন / এলাকা": "Location / area", "লোড হচ্ছে...": "Loading...", "শনি": "Sat", "শুক্র": "Fri", "শেষ মাল নিয়েছে:": "Last order:", "শেষ হবে": "Ending soon", "শেষ ৩০ দিনের বিক্রি": "Last 30 days' sales", "শেষ ৩০ দিনের লাভ": "Last 30 days' profit", "সংরক্ষণ করুন": "Save", "সংরক্ষণ হচ্ছে...": "Saving...", "সংরক্ষিত হয়েছে।": "Saved.", "সব ক্লায়েন্ট": "All customers", "সব মাল তালিকায় আছে।": "All products are in the list.", "সব মিলিয়ে": "all combined", "সবচেয়ে বেশি বাকি": "Highest dues", "সবাই": "All", "সম্ভাব্য": "Prospect", "সাধারণ বিক্রির দাম (RM, ইচ্ছা হলে)": "Usual sell price (RM, optional)", "সাবস্ক্রিপশন": "Subscription", "সাম্প্রতিক নগদ বিক্রি": "Recent cash sales", "সিঙ্গাপুর": "Singapore", "সীমা নেই": "No limit", "সেরা দিন": "Best day", "সোম": "Mon", "সৌদি আরব": "Saudi Arabia", "স্টক": "Stock", "স্টক এর নিচে নামলে সতর্কতা (পিস, ইচ্ছা হলে)": "Warn when stock falls below (pcs, optional)", "স্টক শেষ": "Out of stock", "স্টকে যোগ করুন": "Add to stock", "স্টকে যোগের তালিকা": "Stock additions", "স্বাগতম!": "Welcome!", "হিসাব মেলান": "Check count", "হোম": "Home", "হোয়াটসঅ্যাপ নম্বর যোগ করুন (দেশের কোড সহ)": "Add WhatsApp number (with country code)", "হোয়াটসঅ্যাপ নম্বর লিখুন": "Enter WhatsApp number", "হোয়াটসঅ্যাপে টাকার কথা মনে করান": "Send payment reminder on WhatsApp", "হোয়াটসঅ্যাপে পাঠাতে এই ক্লায়েন্টের নম্বর যোগ করুন।": "Add this customer's number to send on WhatsApp.", "হোয়াটসঅ্যাপে পাঠান": "Send on WhatsApp", "হোয়াটসঅ্যাপে বিল পাঠান": "Send bill on WhatsApp", "১. টাকা পাঠিয়ে রিসিটের স্ক্রিনশট নিন।": "1. Pay and take a screenshot of the receipt.", "২. নিচের বোতাম চেপে হোয়াটসঅ্যাপে মেসেজ পাঠান, সাথে স্ক্রিনশটটা দিন।": "2. Tap the button below to message on WhatsApp, and attach the screenshot.", "৩. নিশ্চিত হওয়ার পরে আপনার মেয়াদ বাড়িয়ে দেওয়া হবে।": "3. Your plan will be extended once confirmed.", "৩০ দিনের বেশি টাকা দেননি": "Unpaid for 30+ days", "৫ দিনের মধ্যে শেষ হবে": "Ending within 5 days", "✅ টাকা পাঠিয়েছি, রিসিট পাঠান": "✅ I've paid, send receipt", "✓ পাঠানো": "✓ Sent", "➕ ক্লায়েন্ট যোগ করুন": "➕ Add customer", "👀 কাস্টমার যেমন দেখবে": "👀 Preview as customer", "👑 মালিক-পাতা": "👑 Owner page", "👑 মালিক-পাতা খুলুন": "👑 Open owner page", "💬 হোয়াটসঅ্যাপে মেসেজ পাঠান": "💬 Send WhatsApp message", "💳 পেমেন্ট করুন": "💳 Make payment", "💵 নগদ বিক্রি": "💵 Cash sale", "📋 নম্বর কপি করুন": "📋 Copy number", "📢 সবাইকে খবর / অফার পাঠান": "📢 Send news / offer to all", "+ প্রোডাক্ট যোগ করুন": "+ Add product", "+ যোগ করুন": "+ Add", "+১ মাস": "+1 month", "+৩ মাস": "+3 months", "DuitNow QR-এর ছবি (স্ক্রিনশট বেছে নিন)": "DuitNow QR image (choose a screenshot)", "Gmail বা নাম দিয়ে খুঁজুন": "Search by Gmail or name", "QR স্ক্যান করে পাঠান": "Scan the QR to pay", "(মেয়াদের কোনো সীমা নেই)": "(no expiry)", "QR": "QR", "যেকোনো ব্যাংক অ্যাপ, Touch 'n Go বা অন্য ই-ওয়ালেট দিয়ে স্ক্যান করা যাবে": "Scan with any bank app, Touch 'n Go or other e-wallet", "যেমন: Chow Kit, KL": "e.g. Chow Kit, KL", "যেমন: Forhad Telecom": "e.g. Forhad Telecom", "যেমন: Maybank": "e.g. Maybank", "যেমন: Maybank 1234… / TNG 01X…": "e.g. Maybank 1234… / TNG 01X…", "যেমন: Umobile": "e.g. Umobile", "যেমন: Charger": "e.g. Charger", "যেমন: কবে কথা হলো, কী মাল চায়": "e.g. when you last talked, what they need", "যেমন: সিম ও রিচার্জ পাইকারি সাপ্লায়ার": "e.g. SIM & reload wholesale supplier", "যেমন: Maxis (পিসের সংখ্যা নামে লিখবেন না)": "e.g. Maxis (don't put the piece count in the name)", "যেমন: নতুন মাল এসেছে! Maxis সিম এখন RM 25। অর্ডার দিতে মেসেজ করুন।": "e.g. New stock arrived! Maxis SIM now RM 25. Message to order.", "যেমন: 10": "e.g. 10", "যেমন: 100": "e.g. 100", "যেমন: 20": "e.g. 20", "যেমন: 28": "e.g. 28", "যেমন: 338": "e.g. 338", "যেমন: 5": "e.g. 5", "যেমন: Maxis-10*30=300/Celcom-5*28=140": "e.g. Maxis-10*30=300/Celcom-5*28=140", "আগের হিসাব": "Earlier balance", "স্টক থেকে কমবে:": "Will reduce stock:", "জন": "", "রেফারেন্সে লিখুন:": "Reference:", "বাংলা": "বাংলা", "মুদ্রা": "Currency", "সব হিসাব এই মুদ্রায় দেখাবে। দেশ অনুযায়ী নিজে থেকেই ঠিক হয়, চাইলে বদলাতে পারেন।": "All amounts are shown in this currency. It is set automatically from your country; you can change it.", "মুদ্রা বদলানো হয়েছে": "Currency changed", "🗑️ তালিকা থেকে সরান": "🗑️ Remove from list", "নিশ্চিত? আবার চাপুন": "Sure? Tap again", "পুরনো হিসাব, স্টক আর রিপোর্ট ঠিক থাকবে। শুধু তালিকা থেকে নাম সরে যাবে।": "Old records, stock and reports stay the same. Only the name leaves the list.", "এদের পুরনো হিসাব রিপোর্টে আর স্টকে ঠিক আছে। একই নামে নতুন করে যোগ করলে বা নিচে চাপলে সব হিসাবসহ ফিরে আসবে।": "Their old records stay in reports and stock. Add them again with the same name, or tap below, to bring them back with all records.", "ফিরিয়ে আনুন": "Bring back"},PH=[["থাইল্যান্ড", "Thailand"], ["পাকিস্তান", "Pakistan"], ["শ্রীলঙ্কা", "Sri Lanka"], ["মিয়ানমার", "Myanmar"], ["ফিলিপাইন", "Philippines"], ["আমেরিকা", "USA"],["মালয়েশিয়া", "Malaysia"], ["বাংলাদেশ", "Bangladesh"], ["সিঙ্গাপুর", "Singapore"], ["ভারত", "India"], ["নেপাল", "Nepal"], ["আমিরাত", "UAE"], ["সৌদি আরব", "Saudi Arabia"], ["কাতার", "Qatar"], ["কুয়েত", "Kuwait"], ["ওমান", "Oman"], ["বাহরাইন", "Bahrain"], ["ইন্দোনেশিয়া", "Indonesia"], ["যুক্তরাজ্য", "UK"],["ফ্রি ট্রায়াল চলবে:", "Free trial until:"], ["সাবস্ক্রিপশন চলবে:", "Subscription until:"], ["ক্লাউডে সংরক্ষণ হয়নি:", "Not saved to cloud:"], ["ফোনে রাখা আছে।", "Kept on phone."], ["ফোনে সংরক্ষিত। ক্লাউডে সংযোগ হয়নি", "Saved on phone. Couldn't reach cloud"], ["লগইন হয়নি:", "Login failed:"], ["তালিকা আনা গেল না", "Couldn't load the list"], ["সংরক্ষণ হয়নি", "Not saved"], ["মেয়াদ বাড়ানো হয়েছে:", "Plan extended until"], ["আগেই ছিল, আপডেট হয়েছে", "already existed, updated"], ["যোগ হয়েছে", "added"], ["স্টক এখন", "stock now"], ["স্টকে যোগ হয়েছে। এখন স্টক", "Added to stock. Stock now"], ["এবার পিস লিখুন", "now enter the pcs"], ["সংরক্ষিত হয়েছে। লাভ", "Saved. Profit"], ["দিন হয়ে গেছে", "days ago"], ["দিন বাকি", "days left"], ["দিন আগে", "days ago"], ["দিন পরে", "days"], ["জনের কাছে বাকি আছে", "customers owe you"], ["মেয়াদ শেষ", "expired"], ["পর্যন্ত", "until"], ["স্টকে", "In stock"], ["স্টক", "Stock"], ["কেনা", "Buy"], ["বিক্রি", "Sell"], ["যোগ:", "joined:"], ["লাভ:", "Profit:"], ["(কম)", "(low)"], ["সমস্যা:", "Problem:"], ["হয়নি", "failed"], ["থেকে মোট হয়", "total from"], ["থেকে মোট", "total from"], ["তুলনায়", "compared"], ["আগের ৭ দিনের", "vs previous 7 days"], ["মেসেজে", "in message"], ["নম্বর নেই", "no number"], ["-এর বাকি এখন", " now owes"], ["প্রতি পিস · স্টকে", "per pc · in stock"], ["প্রতি পিস", "per pc"], ["লাইন", "line"], ["পিস", "pcs"], ["দিন", "days"], ["ট্রায়াল", "Trial"], ["পেইড", "Paid"], ["জন", ""]],RX=[
+[/^মুছে ফেলা যায়নি \((.+)\)। ইন্টারনেট দেখে আবার চেষ্টা করুন।$/,'Could not delete ($1). Check your internet and try again.'],
+[/^⏳ (\S+) দিন হয়ে গেছে$/,'⏳ $1 days ago'],
+[/^হোয়াটসঅ্যাপ একবারে সবাইকে পাঠাতে দেয় না, তাই প্রত্যেকের পাশের বোতামে একে একে চাপুন। পাঠানো হলে ✓ চিহ্ন আসবে। \((.+)\)$/,"WhatsApp doesn't allow sending to everyone at once, so tap the button next to each person one by one. A ✓ appears once sent. ($1)"],
+[/^(সবাই|নিয়মিত|মাঝে মাঝে|সম্ভাব্য) \((\S+)\)$/,(m,a,b)=>({'সবাই':'All','নিয়মিত':'Regular','মাঝে মাঝে':'Occasional','সম্ভাব্য':'Prospect'}[a])+' ('+b+')'],
+[/^শেষ মাল নিয়েছে: (.+) \((\S+) দিন আগে\)$/,'Last order: $1 ($2 days ago)'],
+[/^(মাল দিলাম|পুরনো বাকি|টাকা পেলাম): (.+)$/,(m,a,b)=>({'মাল দিলাম':'Gave goods','পুরনো বাকি':'Old balance','টাকা পেলাম':'Got payment'}[a])+': '+b],
+[/^⏰ আর (\S+) দিন পরে (ফ্রি ট্রায়াল|সাবস্ক্রিপশন) শেষ হবে$/,(m,a,b)=>`⏰ Your ${b==='ফ্রি ট্রায়াল'?'free trial':'subscription'} ends in ${a} days`],
+[/^(.+)-এর মধ্যে পেমেন্ট নিশ্চিত করুন, নাহলে নতুন এন্ট্রি বন্ধ হয়ে যাবে।$/,'Please pay by $1, otherwise new entries will be blocked.'],
+[/^⛔ আপনার (ফ্রি ট্রায়াল|সাবস্ক্রিপশন)ের মেয়াদ শেষ হয়েছে$/,(m,a)=>`⛔ Your ${a==='ফ্রি ট্রায়াল'?'free trial':'subscription'} has ended`],
+[/^আগের ৭ দিনের \((.+)\) তুলনায়$/,'Compared with the previous 7 days ($1)'],
+[/^(\S+) জনের কাছে বাকি আছে$/,'$1 customers owe you'],
+[/^এর মধ্যে পেইড (\S+) জন$/,'Paid: $1'],
+[/^স্টক (\S+) পিস$/,'Stock: $1 pcs'],[/^স্টকে (\S+) পিস$/,'In stock: $1 pcs'],[/^(\S+) পিস \(কম\)$/,'$1 pcs (low)'],[/^(\S+) পিস$/,'$1 pcs'],
+[/^পর্যন্ত \((\S+) দিন বাকি\)$/,'($1 days left)'],[/^পর্যন্ত \(মেয়াদ শেষ\)$/,'(expired)'],
+[/^(ট্রায়াল|পেইড) · (\S+) দিন$/,(m,a,b)=>`${a==='পেইড'?'Paid':'Trial'} · ${b} days`],
+[/^নম্বর কপি হয়েছে: (.+)$/,'Number copied: $1'],[/^(\S+) দিন বাকি$/,'$1 days left'],[/^(\S+) দিন হয়ে গেছে$/,'$1 days ago'],[/^(\S+) দিন$/,'$1 days'],
+[/^(.+) যোগ হয়েছে। স্টক এখন (\S+) পিস$/,'$1 added. Stock now $2 pcs'],[/^(.+) আগেই ছিল, আপডেট হয়েছে। স্টক এখন (\S+) পিস$/,'$1 already existed, updated. Stock now $2 pcs'],
+[/^মেয়াদ বাড়ানো হয়েছে: (.+) পর্যন্ত$/,'Plan extended until $1'],
+[/^(.+)-এর বাকি এখন (.+)$/,'$1 now owes $2'],
+];
+  const BN=/[ঀ-৿]/,PHR=PH.map(([a,b])=>[new RegExp('(^|[^\\u0980-\\u09FF])'+a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?=$|[^\\u0980-\\u09FF])','g'),b]);
+  const tr=s=>{const m=/^(\s*)([\s\S]*?)(\s*)$/.exec(s),c=m[2];if(!c||!BN.test(c))return s;let t=EN[c];const CS=(typeof curSym==="function")?curSym():"RM";if(t===undefined&&CS!=="RM"&&c.indexOf(CS)>=0){const k=EN[c.split(CS).join("RM")];if(k!==undefined)t=k.split("RM").join(CS)}
+   if(t===undefined){t=c;let hit=false;for(const [re,rp] of RX){if(re.test(t)){t=t.replace(re,rp);hit=true;break}}
+    if(!hit)for(const [re,b] of PHR)t=t.replace(re,(x,p)=>p+b);}
+   t=t.replace(/[০-৯]/g,d=>'০১২৩৪৫৬৭৮৯'.indexOf(d));return m[1]+t+m[3]};
+  window.trText=tr;
+  const SK={SCRIPT:1,STYLE:1,TEXTAREA:1,INPUT:1};
+  const AT=['placeholder','aria-label','title','alt'];
+  const node=n=>{if(n.nodeType===3){const p=n.parentNode;if(p&&SK[p.nodeName])return;const v=tr(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v;return}
+   if(n.nodeType!==1||SK[n.nodeName]&&n.nodeName!=='INPUT'&&n.nodeName!=='TEXTAREA')return;
+   for(const a of AT){const v=n.getAttribute&&n.getAttribute(a);if(v&&BN.test(v)){const w=tr(v);if(w!==v)n.setAttribute(a,w)}}
+   if(SK[n.nodeName])return;for(let c=n.firstChild;c;c=c.nextSibling)node(c)};
+  const go=()=>{node(document.body);document.title=tr(document.title);
+   new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData')node(m.target);else if(m.type==='attributes')node(m.target);else m.addedNodes.forEach(node)}}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:AT})};
+  if(document.body)go();else addEventListener('DOMContentLoaded',go);
+  const CF=window.confirm.bind(window),AL=window.alert.bind(window);
+  const msg=s=>String(s).split('\n').map(x=>x.replace(/^মেয়াদ (\S+) মাস বাড়বে।$/,'Extend plan by $1 month(s).').replace(/^নতুন শেষ তারিখ: (.+)$/,'New end date: $1').replace(/^নিশ্চিত\?$/,'Confirm?')).map(tr).join('\n');
+  window.confirm=s=>CF(msg(s));window.alert=s=>AL(msg(s));
+ }
+})();
+function setLang(l){try{localStorage.setItem('bk-lang',l)}catch(e){}location.reload()}
+function langPick(){if(LANG)return;const d=document.createElement('div');d.id='langpick';let sel='bn';
+ const G='<svg width="22" height="22" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.2l7.9 6.2C12.5 13.5 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.6z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.2C1 16.6 0 20.2 0 24s1 7.4 2.7 10.8l7.9-6.2z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.2 0-11.5-4-13.4-9.6l-7.9 6.2C6.6 42.6 14.6 48 24 48z"/></svg>';
+ const T={bn:{h:'স্বাগতম!',s:'ভাষা বেছে নিন, তারপর লগইন করুন',g:'Google দিয়ে লগইন করুন',n:'প্রত্যেকের খাতা আলাদা ও গোপন থাকে। পরে রিপোর্ট পাতা থেকে ভাষা বদলানো যাবে।',p:'লগইন করলে আপনি আমাদের <a href="privacy.html" target="_blank" rel="noopener">গোপনীয়তা নীতি</a> মেনে নিচ্ছেন।'},
+  en:{h:'Welcome!',s:'Choose your language, then sign in',g:'Sign in with Google',n:'Every account is separate and private. You can change the language later in Report.',p:'By signing in you agree to our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.'}};
+ const draw=()=>{const t=T[sel];d.innerHTML=`<div class="lp-c"><img src="icon-192.png" width="72" height="72" alt="" style="border-radius:18px;box-shadow:0 6px 18px rgba(15,94,89,.3)"><h1>${t.h}</h1><p>${t.s}</p>
+  <div class="lp-row"><button class="lp-b${sel==='bn'?' on':''}" data-lang="bn"><span class="lp-f">অ</span><span><b>বাংলা</b><small>Bangla</small></span></button><button class="lp-b${sel==='en'?' on':''}" data-lang="en"><span class="lp-f">A</span><span><b>English</b><small>ইংরেজি</small></span></button></div>
+  ${inApp()?inAppBox():`<button class="lp-g" id="lpg">${G}<span>${t.g}</span></button><p id="lperr" class="lp-e"></p>`}
+  <p class="lp-n">${t.n}</p><p class="lp-n lp-pp">${t.p}</p></div>`};
+ draw();document.body.appendChild(d);
+ d.addEventListener('click',async e=>{const b=e.target.closest('[data-lang]');if(b){sel=b.dataset.lang;draw();return}
+  if(!e.target.closest('#lpg'))return;
+  try{localStorage.setItem('bk-lang',sel)}catch(x){}
+  const done=()=>{if(sel==='en')location.reload();else{d.remove();LANG='bn'}};
+  try{if(firebase.auth().currentUser){done();return}
+   const pr=new firebase.auth.GoogleAuthProvider();pr.setCustomParameters({prompt:'select_account'});
+   await firebase.auth().signInWithPopup(pr);done()}
+  catch(x){const c=(x&&x.code)||'';
+   if(/popup-blocked|operation-not-supported/.test(c)){try{await firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider())}catch(y){}}
+   else if(!/popup-closed|cancelled-popup/.test(c)){const er=$('#lperr')||document.getElementById('lperr');if(er)er.textContent=(sel==='en'?'Sign-in failed: ':'লগইন হয়নি: ')+(c||x)}}})}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-setlang]');if(b&&b.dataset.setlang!==(LANG||'bn'))setLang(b.dataset.setlang)});
+function langCard(){const L=LANG||'bn';return `<h2>ভাষা / Language</h2><div class="card lc" style="margin-top:0"><button class="${L==='bn'?'on':''}" data-setlang="bn"><b>বাংলা</b><small>Bangla</small></button><button class="${L==='en'?'on':''}" data-setlang="en"><b>English</b><small>ইংরেজি</small></button></div>`}
+if(document.readyState==='loading')addEventListener('DOMContentLoaded',langPick);else setTimeout(langPick,0);
+</script>
+<script>
+window.addEventListener('error',e=>{try{if(!(e.lineno>1)||(e.filename&&e.filename!==location.href&&!/^blob:|^about:/.test(e.filename)))return;const m='সমস্যা: '+(e.message||'?')+' (লাইন '+(e.lineno||'?')+')';const s=document.getElementById('st');if(s){s.textContent=m;s.className='st bad'}const t=document.getElementById('toast');if(t){t.textContent=m;t.style.display='block'}}catch(x){}});
+window.addEventListener('unhandledrejection',e=>{try{if(!(e.reason&&e.reason.code))return;const r=e.reason;const s=document.getElementById('st');if(s){s.textContent='সমস্যা: '+((r&&(r.code||r.message))||r);s.className='st bad'}}catch(x){}});
+let KEY="bakir-khata-c1";
+let S={clients:[],tx:[],products:[],stockIn:[]};
+S.products=S.products||[];S.stockIn=S.stockIn||[];S.settings=S.settings||{};S.cash=S.cash||[];
+const saveLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+let dbc=null,uid0=null,chain=Promise.resolve(),dirty=new Set(),gone=new Set();
+var stT;function setSt(t,bad){const s=$("#st");if(!s)return;clearTimeout(stT);s.textContent=t;s.className="st"+(bad?" bad":"");s.style.opacity='1';s.style.display=t?'':'none';
+ if(t&&!bad&&!/\.\.\.$/.test(t))stT=setTimeout(()=>{s.style.opacity='0';setTimeout(()=>{if(s.style.opacity==='0')s.style.display='none'},400)},3000)}
+const colRef=()=>dbc.collection("users").doc(uid0).collection("khata");
+const docBody=cid=>({client:S.clients.find(c=>c.id===cid),tx:S.tx.filter(t=>t.cid===cid)});
+const clean=o=>JSON.parse(JSON.stringify(o,(k,v)=>typeof v==='number'&&!isFinite(v)?0:v));
+async function put(ref,body){try{await ref.set(clean(body))}catch(e){if(e&&e.code==='unavailable'){await new Promise(r=>setTimeout(r,800+Math.random()*700));await ref.set(clean(body))}else throw e}}
+function flush(){
+ if(!dbc)return;
+ chain=chain.then(async()=>{
+  const ids=[...dirty];dirty.clear();const rm=[...gone];gone.clear();const bad=[];
+  for(const id of ids){try{if(id==='stock')await put(colRef().doc('stock'),{products:S.products,stockIn:S.stockIn,settings:S.settings||{},cash:S.cash||[]});else{const b=docBody(id);if(b.client)await put(colRef().doc('c_'+id),b)}}catch(e){bad.push([id,(e&&(e.code||e.message))||'?']);if(!(e&&(e.code==='invalid_argument'||e.code==='transform_error')))dirty.add(id)}}
+  for(const id of rm){try{await colRef().doc("c_"+id).delete()}catch(e){}}
+  if(!bad.length)setSt("নিরাপদে সংরক্ষিত");
+  else{const w=bad.map(([id,c])=>(id==='stock'?'স্টক':((S.clients.find(x=>x.id===id)||{}).name||id))+' ('+c+')').join(', ');setSt("ক্লাউডে সংরক্ষণ হয়নি: "+w+"। ফোনে রাখা আছে।",1);toast("ক্লাউডে সংরক্ষণ হয়নি: "+w)}
+ });
+}
+function save(ids){if(isExpired()){try{const r=localStorage.getItem(KEY);if(r)S=JSON.parse(r)}catch(e){}S.products=S.products||[];S.stockIn=S.stockIn||[];S.settings=S.settings||{};S.cash=S.cash||[];showForm=false;render();toast("মেয়াদ শেষ। নতুন কিছু সংরক্ষণ করা যাবে না, পেমেন্ট করে আবার চালু করুন।");window.scrollTo(0,0);throw new Error("expired")}saveLocal();if(ids==="all")S.clients.forEach(c=>dirty.add(c.id));else if(ids)ids.forEach(i=>dirty.add(i));flush()}
+const $=s=>document.querySelector(s);
+const DG="০১২৩৪৫৬৭৮৯";
+const num=v=>parseFloat(String(v).replace(/[০-৯]/g,d=>DG.indexOf(d)).replace(/[,\s]/g,""));
+const n=x=>x.toLocaleString("bn-BD",{maximumFractionDigits:2});
+const CURM={MY:"RM",BD:"৳",SG:"S$",IN:"₹",NP:"Rs",ID:"Rp",TH:"฿",PK:"Rs",LK:"Rs",MM:"MMK",PH:"₱",AE:"AED",SA:"SAR",QA:"QAR",KW:"KWD",OM:"OMR",BH:"BHD",GB:"£",US:"$"};
+function curCC(){const st=(typeof S!=="undefined"&&S&&S.settings)||{};if(st.cur&&CURM[st.cur])return st.cur;const pc=(typeof PROF!=="undefined"&&PROF&&PROF.cc)||"";if(CURM[pc])return pc;try{return ccGuess()}catch(e){return "MY"}}
+function curSym(){return CURM[curCC()]||"RM"}
+const fmt=x=>curSym()+" "+n(x);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const fd=d=>new Date(d+"T00:00:00").toLocaleDateString("bn-BD",{day:"numeric",month:"short",year:"numeric"});
+const bal=id=>S.tx.reduce((s,t)=>t.cid===id?s+(t.type==="give"?t.amt:-t.amt):s,0);
+let tab="home",cur=null,curP=null,rm=today().slice(0,7),add={type:"give",cid:""},q="",showForm=false,delId=null,tt;
+function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(tt);tt=setTimeout(()=>t.style.display="none",2800)}
+function go(t,c){tab=t;cur=c||null;curP=null;showForm=false;delId=null;render();scrollTo(0,0)}
+const VC=()=>S.clients.filter(c=>!c.hidden);
+const HC=()=>S.clients.filter(c=>c.hidden);
+const nmK=x=>String(x||"").trim().replace(/\s+/g," ").toLowerCase();
+let hideAsk=null;
+function withBal(){return VC().map(c=>({c,b:bal(c.id)}))}
+const AVC=[['#0F5E59','#E0F0EC'],['#1E6B4F','#E2F3E8'],['#8A5A00','#FCEFCF'],['#A4262C','#F9E3E2'],['#2F5597','#E3EBF8'],['#6B3FA0','#EEE6F8'],['#B34700','#FDE8D8'],['#00707A','#DDF2F3']];
+function av(name){const t=String(name||'?').trim(),ch=(Array.from(t)[0]||'?').toUpperCase();let h=0;for(const c of t)h=(h*31+c.codePointAt(0))>>>0;const [f,b]=AVC[h%AVC.length];return `<i class="av" aria-hidden="true" style="color:${f};background:${b}">${esc(ch)}</i>`}
+function row(r){const b=r.b;const cls=b>0.005?"red":b<-0.005?"grn":"mut";const txt=b<-0.005?"অগ্রিম "+fmt(-b):fmt(b>0.005?b:0);return `<li><button class="row" data-act="open" data-id="${r.c.id}"><span class="nmw">${av(r.c.name)}<span style="min-width:0"><b class="pn">${esc(r.c.name)}</b>${r.c.loc?`<small class="hl">📍 ${esc(r.c.loc)}</small>`:''}</span></span><span class="${cls}">${txt}</span></button></li>`}
+const pn=id=>{const p=S.products.find(x=>x.id===id);return p?p.name:'?'};
+const stockOf=id=>S.stockIn.filter(s=>s.pid===id).reduce((a,s)=>a+s.qty,0)-S.tx.reduce((a,t)=>a+(t.lines||[]).filter(l=>l.pid===id).reduce((b,l)=>b+l.q,0),0)-(S.cash||[]).filter(c=>c.pid===id).reduce((a,c)=>a+c.q,0);
+function parseLines(note){
+ const t=String(note).replace(/[০-৯]/g,d=>DG.indexOf(d)),out=[];
+ t.split(/[/;]+/).forEach(seg=>{
+  const m=seg.match(/^[ ]*(.+?)[ ]*[-:][ ]*([0-9]+(?:[.][0-9]+)?)[ ]*[*×xX][ ]*([0-9]+(?:[.][0-9]+)?)/);
+  if(!m)return;
+  const k=m[1].trim().toLowerCase(),p=S.products.find(x=>!x.off&&x.name.trim().toLowerCase()===k)||S.products.find(x=>!x.off&&x.name.trim().toLowerCase().split(/[- 0-9]/)[0]===k);
+  if(p)out.push({pid:p.id,q:parseFloat(m[2]),pr:parseFloat(m[3]),cost:p.buy||0});
+ });
+ return out;
+}
+function rowLines(){return add.items.filter(i=>i.q>0).map(i=>{const p=S.products.find(x=>x.id===i.pid);return {pid:i.pid,q:i.q,pr:i.pr||0,cost:i.cost!==undefined?i.cost:((p&&p.buy)||0)}})}
+function itemsHtml(){return add.items.map((it,i)=>{const st=stockOf(it.pid),lt=(num(it.q)||0)*(num(it.pr)||0);return `<li class='it'><div class='it-h'>${av(pn(it.pid))}<div class='it-n'><b>${esc(pn(it.pid))}</b><small class='${st<=0?'neg':''}'>স্টকে ${n(st)} পিস</small></div><button class='it-x' data-act='rmitem' data-i='${i}' aria-label='বাদ দিন'>×</button></div><div class='it-f'><label class='it-b'><span>পিস</span><input class='sq' data-i='${i}' inputmode='decimal' placeholder='০' value='${it.q||''}'></label><span class='it-o'>×</span><label class='it-b'><span>দাম (${curSym()})</span><input class='sp' data-i='${i}' inputmode='decimal' placeholder='০' value='${it.pr||''}'></label><span class='it-o'>=</span><div class='it-t'><span>মোট</span><b data-lt='${i}'>${lt?fmt(lt):'—'}</b></div></div></li>`}).join('')}
+function topProducts(){const c={};S.tx.forEach(t=>(t.lines||[]).forEach(l=>{c[l.pid]=(c[l.pid]||0)+1}));return S.products.filter(p=>!p.off).map((p,i)=>({p,i,k:c[p.id]||0})).sort((a,b)=>b.k-a.k||a.i-b.i).slice(0,8).map(x=>x.p)}
+function matchHtml(){
+ const k=(add.q||'').trim().toLowerCase();
+ if(!S.products.length)return `<p class='mut' style='font-size:14px'>এখনো কোনো মাল নেই। নিচে নতুন প্রোডাক্ট বানান।</p>`;
+ const r=S.products.filter(p=>!p.off&&(!k||p.name.toLowerCase().includes(k))&&!add.items.some(i=>i.pid===p.id)).slice(0,8);
+ return r.length?`<ul class='list'>${r.map(p=>`<li><button class='row' data-act='additem' data-id='${p.id}'><span>${esc(p.name)}</span><span class='mut'>+ যোগ করুন</span></button></li>`).join('')}</ul>`:`<p class='mut' style='font-size:14px'>${k?'এই নামে কোনো মাল নেই।':'সব মাল তালিকায় আছে।'}</p>`;
+}
+function redrawItems(){const u=$('#items');if(!u)return;u.innerHTML=itemsHtml();u.style.display=add.items.length?'block':'none';const m=$('#matches');if(m)m.innerHTML=matchHtml();updAuto()}
+function showBanner(id,c){const bl=billLink(id);$('#app').insertAdjacentHTML('afterbegin',`<div class='card' style='margin:0 0 12px;border-left:4px solid var(--grn)'><b>সংরক্ষিত হয়েছে।</b><p class='mut'>${esc(c.name)}-এর বাকি এখন ${fmt(Math.max(bal(c.id),0))}</p>${bl?`<div style='margin-top:10px'>${billBtns(id)}</div>`:`<p style='margin-top:8px'>হোয়াটসঅ্যাপে পাঠাতে এই ক্লায়েন্টের নম্বর যোগ করুন।</p>`}</div>`)}
+const saleLines=note=>{const L=rowLines();return L.length?L:parseLines(note)};
+function updAuto(){
+ const L=rowLines(),rt=L.reduce((s,l)=>s+l.q*l.pr,0),nt=noteTotal($('#an').value),t=Math.round((rt>0?rt:nt)*100)/100,h=$('#hint'),a=$('#aa'),src=rt>0?'মালের ঘর':'নোট';
+ if(t>0){if(!add.manual){a.value=t;h.textContent=src+' থেকে মোট '+fmt(t)+', টাকার ঘরে বসে গেছে।'}else h.textContent=src+' থেকে মোট হয় '+fmt(t)+', কিন্তু টাকার ঘরে আপনার লেখা অঙ্কই থাকবে।'}
+ else{h.textContent='';if(!add.manual)a.value=''}
+ const LL=add.type==='give'?(L.length?L:parseLines($('#an').value)):[];
+ if(LL.length)h.textContent+=' স্টক থেকে কমবে: '+LL.map(l=>pn(l.pid)+' '+n(l.q)+' পিস').join(', ')+'। লাভ: '+fmt(LL.reduce((s,l)=>s+(l.pr-l.cost)*l.q,0))+'।';
+}
+document.addEventListener('input',e=>{const el=e.target,c=el.classList;
+ if(el.id==='isq'){add.q=el.value;$('#matches').innerHTML=matchHtml();return}
+ if(c&&(c.contains('sq')||c.contains('sp'))){const it=add.items[+el.dataset.i];if(it){if(c.contains('sq'))it.q=num(el.value)||0;else it.pr=num(el.value)||0}updAuto();return}
+ if(el.id==='an')updAuto()});
+function shiftM(m,d){const a=m.split('-').map(Number),dt=new Date(a[0],a[1]-1+d,1);return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')}
+const mlabel=m=>new Date(m+'-01T00:00:00').toLocaleDateString('bn-BD',{month:'long',year:'numeric'});
+function vStock(){
+ let h=`<button class='btn ghost' data-act='toggleform'>${showForm?'বন্ধ করুন':'নতুন মাল যোগ করুন'}</button>`;
+ if(showForm)h+=`<div class='card'><label for='pn' style='margin-top:0'>মালের নাম (বিক্রির নোটে যেভাবে লিখবেন)</label><input id='pn' autocomplete='off' placeholder='যেমন: Maxis (পিসের সংখ্যা নামে লিখবেন না)'><label for='pq'>এখন কত পিস আছে / এসেছে</label><input id='pq' inputmode='decimal' placeholder='যেমন: 100'><label for='pb'>কেনা দাম (প্রতি পিস, ${curSym()})</label><input id='pb' inputmode='decimal'><label for='ps'>বিক্রির দাম (প্রতি পিস, ${curSym()})</label><input id='ps' inputmode='decimal'><label for='pl'>স্টক এর নিচে নামলে সতর্কতা (পিস, ইচ্ছা হলে)</label><input id='pl' inputmode='numeric'><div style='margin-top:14px'><button class='btn' data-act='saveprod'>মাল সংরক্ষণ করুন</button></div></div>`;
+ h+='<h2>মালের স্টক</h2>';
+ if(!S.products.some(p=>!p.off))return h+`<p class='empty'>এখনো কোনো মাল নেই। উপরের বোতামে চেপে প্রথম মাল যোগ করুন।</p>`;
+ return h+`<ul class='list'>${S.products.filter(p=>!p.off).map(p=>{const s=stockOf(p.id),low=s<=(p.low||0);return `<li id='pr_${p.id}'><button class='row' data-act='openp' data-id='${p.id}'><span class='nmw'>${av(p.name)}<span style='min-width:0'><b class='pn'>${esc(p.name)}</b><span class='pc'><em>কেনা ${fmt(p.buy||0)}</em><em class='sell'>বিক্রি ${fmt(p.sell||0)}</em></span></span></span><span class='sb ${s<0?'neg':s<=0?'out':low?'low':'ok'}'><b>${n(s)}</b><small>${s<0?'হিসাব মেলান':s<=0?'স্টক শেষ':low?'কম আছে':'পিস আছে'}</small></span></button></li>`}).join('')}</ul>`;
+}
+function vProduct(){
+ const p=S.products.find(x=>x.id===curP);if(!p){curP=null;return vStock()}
+ const s=stockOf(p.id),low=s<=(p.low||0);
+ const ins=S.stockIn.filter(x=>x.pid===p.id).sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id));
+ let h=`<button class='link' data-act='backp'>ফিরে যান</button><div class='head'><h1>${esc(p.name)}</h1></div><section class='hero'><p class='lab'>এখন স্টকে আছে</p><p class='big' style='color:var(${low?'--red':'--grn'})'>${n(s)} পিস</p></section>`;
+ h+=`<div class='card'><b>নতুন মাল এলে লিখুন</b><label for='sq'>কত পিস এসেছে</label><input id='sq' inputmode='decimal'><label for='sb'>কেনা দাম (প্রতি পিস)</label><input id='sb' inputmode='decimal' value='${p.buy||''}'><label for='sd'>তারিখ</label><input id='sd' type='date' value='${today()}'><div style='margin-top:14px'><button class='btn get' data-act='savein' data-id='${p.id}'>স্টকে যোগ করুন</button></div></div>`;
+ h+=`<div class='card'><b>নাম ও দাম বদলান</b><label for='en'>মালের নাম</label><input id='en' autocomplete='off' value="${esc(p.name)}"><label for='eb'>কেনা দাম</label><input id='eb' inputmode='decimal' value='${p.buy||''}'><label for='es'>বিক্রির দাম</label><input id='es' inputmode='decimal' value='${p.sell||''}'><div style='margin-top:14px'><button class='btn ghost' data-act='saveprice' data-id='${p.id}'>দাম সংরক্ষণ করুন</button></div></div><h2>স্টকে যোগের তালিকা</h2>`;
+ const delCard=`<div class='card' style='border-left:4px solid var(--red)'><b>এই মাল তালিকা থেকে মুছুন</b><p class='mut' style='font-size:15px'>ভুল করে যোগ হলে বা এই মাল আর বিক্রি না করলে মুছে দিন। আগের বিক্রির হিসাব ঠিক থাকবে।</p><div style='margin-top:10px'><button class='btn' style='background:#A4262C' data-act='delprod' data-id='${p.id}'>${delId==='P'+p.id?'নিশ্চিত? আবার চাপুন':'মালটা মুছে ফেলুন'}</button></div></div>`;
+ return h+(ins.length?`<ul class='list'>${ins.map(x=>`<li class='tx'><div><b class='grn'>+ ${n(x.qty)} পিস</b><small>${fd(x.date)}${x.buy?' · কেনা '+fmt(x.buy):''}</small></div><button class='del' data-act='delin' data-id='${x.id}'>${delId===x.id?'নিশ্চিত? আবার চাপুন':'মুছুন'}</button></li>`).join('')}</ul>`:`<p class='empty'>এখনো কোনো মাল যোগ হয়নি।</p>`)+delCard;
+}
+function vHome(){
+ const rows=withBal().filter(r=>r.b>0.005).sort((a,b)=>b.b-a.b);
+ const tot=rows.reduce((s,r)=>s+r.b,0);
+ let h=`${bkBtn('tohub','সব সেবা')}<section class="hero"><p class="lab">মোট পাওনা</p><p class="big">${fmt(tot)}</p><p class="sub">${n(rows.length)} জনের কাছে বাকি আছে</p></section>`+homeToday();
+ h+=`<div style="margin-top:10px"><button class="btn" style="background:#0F5E59" data-act="cash">💵 নগদ বিক্রি</button></div>`;
+  if(!VC().length)return h+`<p style="margin:18px 0 10px;font-size:17px;font-weight:600;color:var(--ink)">এখনো কোনো ক্লায়েন্ট নেই। বাকিতে মাল দিলে প্রথমে ক্লায়েন্ট যোগ করুন।</p><button class="btn" style="background:#A4262C" data-act="goclients">➕ ক্লায়েন্ট যোগ করুন</button>`;
+ h+=`<div class="two"><button class="btn give" data-act="new" data-type="give">মাল দিলাম</button><button class="btn get" data-act="new" data-type="get">টাকা পেলাম</button></div><h2>সবচেয়ে বেশি বাকি</h2>`;
+ return h+(rows.length?`<ul class="list">${rows.slice(0,5).map(row).join("")}</ul>`:`<p class="empty">এখন কারো কাছে বাকি নেই।</p>`);
+}
+const ok=x=>(isOld(x)?'0000-00-00':x.date)+x.id;
+const isOld=t=>t&&t.type==='give'&&(t.old||(!(t.lines||[]).length&&/পুর[াা]?[নণ]|পুরাতন|আগের বাক|old due/i.test(t.note||'')));
+const CATS={reg:'নিয়মিত',occ:'মাঝে মাঝে',pro:'সম্ভাব্য'};
+const catOf=c=>CATS[c.cat]?c.cat:'reg';
+let cat='all',bc='all',sent=new Set();
+const waNum=c=>(c.phone||'').replace(/\D/g,'');
+const lastGive=id=>S.tx.filter(t=>t.cid===id&&t.type==='give').reduce((m,t)=>t.date>m?t.date:m,'');
+const daysSince=d=>d?Math.floor((new Date(today()+'T00:00:00')-new Date(d+'T00:00:00'))/864e5):null;
+const WAI=`<svg width='26' height='26' viewBox='0 0 24 24' aria-hidden='true'><path fill='currentColor' d='M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2s.2-1.1.2-1.2-.2-.2-.5-.3z'/></svg>`;
+function crow(r){const c=r.c,b=r.b,k=catOf(c),ph=waNum(c);const cls=b>0.005?"red":b<-0.005?"grn":"mut";const txt=b<-0.005?"অগ্রিম "+fmt(-b):fmt(b>0.005?b:0);
+ return `<li class="crow"><button class="row" data-act="open" data-id="${c.id}"><span class="nmw">${av(c.name)}<span style="min-width:0">${esc(c.name)}<span class="tag ${k}">${CATS[k]}</span>${c.loc?`<small>📍 ${esc(c.loc)}</small>`:''}</span></span><span class="${cls}">${txt}</span></button>${ph?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${ph}" aria-label="${esc(c.name)}-কে হোয়াটসঅ্যাপ">${WAI}</a>`:''}</li>`}
+function listHtml(){
+ const k=q.trim().toLowerCase();
+ const rows=withBal().filter(r=>(cat==='all'||catOf(r.c)===cat)&&(!k||r.c.name.toLowerCase().includes(k)||(r.c.loc||'').toLowerCase().includes(k)||(r.c.phone||'').includes(k))).sort((a,b)=>b.b-a.b||a.c.name.localeCompare(b.c.name));
+ if(!rows.length&&VC().length)return `<p class="empty">${k?'এই নামে কেউ নেই।':'এই ভাগে এখনো কেউ নেই।'}</p>`;
+ return rows.length?`<ul class="list">${rows.map(crow).join("")}</ul>`:`<p class="empty">${VC().length?"এই নামে কেউ নেই।":"এখনো কোনো ক্লায়েন্ট নেই। উপরের বোতামে চেপে প্রথমজনকে যোগ করুন।"}</p>`;
+}
+function vClients(){
+ let h=`<button class="btn ghost" data-act="toggleform">${showForm?"বন্ধ করুন":"নতুন ক্লায়েন্ট যোগ করুন"}</button>`;
+ if(showForm)h+=`<div class="card">${cForm({})}<div style="margin-top:14px"><button class="btn" data-act="saveclient">ক্লায়েন্ট সংরক্ষণ করুন</button></div></div>`;
+ const cnt=k=>VC().filter(c=>k==='all'||catOf(c)===k).length;
+ h+=`<div class="chips">${['all','reg','occ','pro'].map(k=>`<button data-act="cat" data-k="${k}" class="${cat===k?'on':''}">${k==='all'?'সবাই':CATS[k]} (${n(cnt(k))})</button>`).join('')}</div>`;
+ const idle=VC().filter(c=>catOf(c)==='reg').map(c=>({c,d:daysSince(lastGive(c.id))})).filter(x=>x.d!==null&&x.d>=14).sort((a,b)=>b.d-a.d);
+ if(idle.length&&(cat==='all'||cat==='reg'))h+=`<div class="card" style="border-left:4px solid #C98A00"><b>অনেক দিন মাল নেয়নি</b><p class="mut" style="font-size:14px">নিয়মিত কাস্টমার, ১৪ দিনের বেশি কোনো অর্ডার নেই। একটা ফোন বা মেসেজ দিন।</p><ul class="list" style="margin-top:8px">${idle.slice(0,5).map(x=>`<li class="crow"><button class="row" data-act="open" data-id="${x.c.id}"><span>${esc(x.c.name)}</span><span class="mut">${n(x.d)} দিন</span></button>${waNum(x.c)?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${waNum(x.c)}?text=${encodeURIComponent('আসসালামু আলাইকুম '+x.c.name+', অনেক দিন কথা হয় না। নতুন মাল এসেছে, কিছু লাগলে জানাবেন। ধন্যবাদ।')}">${WAI}</a>`:''}</li>`).join('')}</ul></div>`;
+ if(VC().length)h+=`<button class="btn ghost" data-act="bcast" style="margin-top:12px">📢 সবাইকে খবর / অফার পাঠান</button>`;
+ if(VC().length>6)h+=`<label for="q">নাম, এলাকা বা নম্বর দিয়ে খুঁজুন</label><input id="q" value="${esc(q)}" autocomplete="off">`;
+ return h+`<h2>${cat==='all'?'সব ক্লায়েন্ট':CATS[cat]+' কাস্টমার'}</h2><div id="list">${listHtml()}</div>`+hidCard();
+}
+function hidCard(){const L=HC();if(!L.length)return '';return `<details class="card" style="margin-top:14px"><summary style="font-weight:600;cursor:pointer">🗂️ তালিকা থেকে সরানো ক্লায়েন্ট (${n(L.length)})</summary><p class="mut" style="font-size:14px;margin-top:6px">এদের পুরনো হিসাব রিপোর্টে আর স্টকে ঠিক আছে। একই নামে নতুন করে যোগ করলে বা নিচে চাপলে সব হিসাবসহ ফিরে আসবে।</p><ul class="list" style="margin-top:8px">${L.map(c=>`<li class="tx" style="align-items:center"><div>${esc(c.name)}<small>${c.loc?esc(c.loc):''}</small></div><button class="btn ghost" style="width:auto;padding:8px 14px;margin:0" data-act="unhide" data-id="${c.id}">ফিরিয়ে আনুন</button></li>`).join('')}</ul></details>`}
+function cForm(c){const k=c.id?catOf(c):(cat!=='all'?cat:'reg');
+ return `<label for="cn" style="margin-top:0">নাম</label><input id="cn" autocomplete="off" value="${esc(c.name||'')}"><label for="cl">লোকেশন / এলাকা</label><input id="cl" autocomplete="off" placeholder="যেমন: Chow Kit, KL" value="${esc(c.loc||'')}"><label for="cp">মোবাইল / হোয়াটসঅ্যাপ নম্বর (দেশের কোড সহ)</label><input id="cp" inputmode="tel" placeholder="60123456789" value="${esc(c.phone||'')}"><label for="ck">কোন ভাগে</label><select id="ck">${Object.keys(CATS).map(x=>`<option value="${x}"${x===k?' selected':''}>${CATS[x]}</option>`).join('')}</select>${c.id?'':`<label for="cdue">পুরনো বাকি আছে? (${curSym()}, না থাকলে ফাঁকা)</label><input id="cdue" inputmode="decimal" placeholder="যেমন: 338">`}<label for="cnote">নোট (ইচ্ছা হলে)</label><textarea id="cnote" placeholder="যেমন: কবে কথা হলো, কী মাল চায়">${esc(c.note||'')}</textarea>`}
+function readForm(){return {name:$("#cn").value.trim(),loc:$("#cl").value.trim(),phone:$("#cp").value.trim(),cat:$("#ck").value,note:$("#cnote").value.trim()}}
+function vBcast(){
+ const list=VC().filter(c=>bc==='all'||catOf(c)===bc);
+ const msg=$('#bm')?$('#bm').value:(S.settings&&S.settings.lastMsg)||'';
+ let h=`<button class="link" data-act="back">ফিরে যান</button><div class="head"><h1>খবর / অফার পাঠান</h1></div><label for="bm" style="margin-top:4px">মেসেজ লিখুন</label><textarea id="bm" style="min-height:120px;font-size:16px" placeholder="যেমন: নতুন মাল এসেছে! Maxis সিম এখন ${curSym()} 25। অর্ডার দিতে মেসেজ করুন।">${esc(msg)}</textarea><p class="mut" style="font-size:14px;margin-top:6px">মেসেজে <b>{নাম}</b> লিখলে প্রত্যেকের নিজের নাম বসে যাবে।</p>`;
+ h+=`<div class="chips">${['all','reg','occ','pro'].map(k=>`<button data-act="bc" data-k="${k}" class="${bc===k?'on':''}">${k==='all'?'সবাই':CATS[k]}</button>`).join('')}</div>`;
+ const ok=list.filter(waNum);
+ h+=`<p class="mut" style="font-size:14px;margin:8px 0">হোয়াটসঅ্যাপ একবারে সবাইকে পাঠাতে দেয় না, তাই প্রত্যেকের পাশের বোতামে একে একে চাপুন। পাঠানো হলে ✓ চিহ্ন আসবে। (${n(sent.size)}/${n(ok.length)})</p>`;
+ if(!list.length)return h+`<p class="empty">এই ভাগে কেউ নেই।</p>`;
+ return h+`<ul class="list" id="blist">${list.map(c=>{const ph=waNum(c);return `<li class="tx" style="align-items:center"><div>${esc(c.name)}<small>${c.loc?esc(c.loc):''}${!ph?' নম্বর নেই':''}</small></div>${ph?`<button class="btn ${sent.has(c.id)?'ghost':'get'}" style="width:auto;min-height:42px;padding:6px 14px" data-act="bsend" data-id="${c.id}">${sent.has(c.id)?'✓ পাঠানো':'পাঠান'}</button>`:''}</li>`}).join('')}</ul>`;
+}
+function cleanName(s){s=String(s);return s.replace(/[ -]*[0-9]+[ ]*(pcs|pc|পিস)?[ ]*$/i,"").trim()||s}
+function pad(s,w){s=String(s);while(s.length<w)s+=" ";return s}
+function billText(tid,lang){
+ const E=lang==='en',W=(bn,en)=>E?en:bn;
+ const t=S.tx.find(x=>x.id===tid);if(!t)return"";
+ const c=S.clients.find(x=>x.id===t.cid);if(!c)return"";
+ const B=S.settings||{};
+ const upto=S.tx.filter(x=>x.cid===c.id&&ok(x)<=ok(t));
+ const after=upto.reduce((s,x)=>s+(x.type==="give"?x.amt:-x.amt),0);
+ const prev=after-(t.type==="give"?t.amt:-t.amt);
+ const r2=x=>Math.round(x*100)/100;
+ const f=x=>curSym()+" "+r2(x).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+ const g=x=>r2(x).toLocaleString("en-US",{maximumFractionDigits:2});
+ const L=(s,w)=>{s=String(s);return s.length>w?s.slice(0,w):s+" ".repeat(w-s.length)};
+ const R=(s,w)=>{s=String(s);return s.length>=w?s:" ".repeat(w-s.length)+s};
+ const OLD=isOld(t);
+ const same=S.tx.filter(x=>x.type===t.type&&isOld(x)===OLD).sort((a,b)=>ok(a).localeCompare(ok(b)));
+ const no=(OLD?"BAL-":t.type==="give"?"INV-":"RCPT-")+String(same.findIndex(x=>x.id===t.id)+1).padStart(4,"0");
+ const dt=new Date(t.date+"T00:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"});
+ const line="━━━━━━━━━━━━━━━━";
+ const biz=(B.name||"").trim();
+ let m="";
+ m+=biz?"🏪 *"+biz.toUpperCase()+"*\n":W("📒 *গণনা খাতা*\n","📒 *Gonona Khata*\n");
+ if(B.tag&&!(E&&/[\u0980-\u09FF]/.test(B.tag)))m+="_"+B.tag.trim()+"_\n";
+ m+=line+"\n";
+ m+=(OLD?W("📋 *বাকির হিসাব*","📋 *BALANCE STATEMENT*"):t.type==="give"?W("🧾 *ইনভয়েস*","🧾 *INVOICE*"):W("✅ *টাকা প্রাপ্তির রসিদ*","✅ *PAYMENT RECEIPT*"))+"\n";
+ m+=W("নম্বর:","No.:")+"  `"+no+"`\n📅 *"+dt+"*\n👤 *"+c.name+"*\n"+line+"\n";
+ if(OLD){
+  m+=W("আমাদের খাতায় আপনার পুরনো বাকি লেখা আছে।","Your previous balance as per our records.")+"\n"+line+"\n";
+  if(prev>0.005)m+=W("আগের বাকি:","Previous due:")+"  "+f(prev)+"\n";
+  m+=W("পুরনো বাকি:","Old balance:")+"  *"+f(t.amt)+"*\n";
+ }else if(t.type==="give"){
+  const Ls=t.lines||[];
+  if(Ls.length){
+   const tq=Ls.reduce((s,l)=>s+l.q,0),NM=10;
+   const rows=Ls.map(l=>({n:cleanName(pn(l.pid)),q:g(l.q),p:g(l.pr),a:g(l.q*l.pr)}));
+   const sh=rows.filter(r=>r.n.length<=NM);
+   const nw=Math.max(5,...sh.map(r=>r.n.length)),qw=Math.max(String(g(tq)).length,...rows.map(r=>r.q.length)),pw=Math.max(...rows.map(r=>r.p.length)),aw=Math.max(String(g(t.amt)).length,...rows.map(r=>r.a.length));
+   const nums=r=>" = "+R(r.q,qw)+" × "+R(r.p,pw)+" = "+R(r.a,aw);
+   let tb=rows.map(r=>r.n.length<=NM?L(r.n,nw)+nums(r):r.n+"\n"+" ".repeat(nw)+nums(r)).join("\n");
+   const W=nw+nums(rows[0]).length;
+   tb+="\n"+"-".repeat(W)+"\n"+L("Total",nw)+" = "+R(g(tq),qw)+" ".repeat(3+pw)+" = "+R(g(t.amt),aw);
+   m+="```\n"+tb+"\n```\n";
+  }else if(t.note)m+=t.note+"\n";
+  m+=line+"\n";
+  m+=W("এই বিল:","This bill:")+"  *"+f(t.amt)+"*\n";
+  m+=W("আগের বাকি:","Previous due:")+"  "+f(Math.max(prev,0))+"\n";
+ }else{
+  m+=W("আপনার কাছ থেকে *"+f(t.amt)+"* বুঝে পেয়েছি। ধন্যবাদ।","Received *"+f(t.amt)+"* from you. Thank you.")+"\n"+line+"\n";
+  m+=W("আগের বাকি:","Previous due:")+"  "+f(Math.max(prev,0))+"\n";
+  m+=W("এবার জমা:","Paid now:")+"  − "+f(t.amt)+"\n";
+ }
+ m+=line+"\n";
+ if(after>0.005)m+="💰 *"+W("মোট বাকি:","Total due:")+"  "+f(after)+"*\n";
+ else if(after<-0.005)m+="💚 *"+W("আপনার অগ্রিম জমা:","Advance balance:")+"  "+f(-after)+"*\n";
+ else m+=W("🎉 *আপনার কোনো বাকি নেই।*\n","🎉 *No balance due. Thank you!*\n");
+ if(B.pay&&after>0.005){m+="\n💳 *"+W("পেমেন্ট","Payment")+"*\n";B.pay.trim().split(/\s*[\/\n|·]+\s*/).filter(Boolean).forEach(x=>{m+="> "+(/^[0-9 \-]{6,}$/.test(x)?"`"+x+"`":x)+"\n"})}
+ if(after>0.005&&t.type==="give"&&!OLD)m+="> "+W("রেফারেন্সে লিখুন:","Reference:")+" `"+no+"`\n";
+ m+="\n"+W("আপনার সাথে ব্যবসা করে আমরা আনন্দিত। 🤝","Thank you for your business. 🤝");
+ const ft=[biz,(B.phone||"").trim()].filter(Boolean).join("  ·  ");
+ if(ft)m+="\n_"+ft+"_";
+ return m;
+}
+function blPref(cid){try{return (JSON.parse(localStorage.getItem('bk-bl')||'{}'))[cid]||'bn'}catch(e){return 'bn'}}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-bl]');if(!a)return;try{const m=JSON.parse(localStorage.getItem('bk-bl')||'{}');m[a.dataset.cid]=a.dataset.bl;localStorage.setItem('bk-bl',JSON.stringify(m))}catch(x){}});
+function billBtns(tid){const t=S.tx.find(x=>x.id===tid);if(!t)return '';const p=blPref(t.cid),bn=billLink(tid,'bn'),en=billLink(tid,'en');if(!bn)return '';
+ const B=(l,lab,h)=>`<a class="btn ${p===l?'get':'ghost'} blb" data-bl="${l}" data-cid="${t.cid}" target="_blank" rel="noopener" href="${h}">${lab}</a>`;
+ const x=[B('bn','বাংলায় পাঠান',bn),B('en','Send in English',en)];if(p==='en')x.reverse();
+ return `<p class="blh">📲 হোয়াটসঅ্যাপে বিল পাঠান</p><div class="two" style="margin-top:6px">${x.join('')}</div>`}
+function billLink(tid,lang){
+ const t=S.tx.find(x=>x.id===tid);if(!t)return null;
+ const c=S.clients.find(x=>x.id===t.cid);if(!c)return null;
+ const ph=(c.phone||"").replace(/\D/g,"");
+ return ph?"https://wa.me/"+ph+"?text="+encodeURIComponent(billText(tid,lang)):null;
+}
+function vClient(){
+ const c=S.clients.find(x=>x.id===cur);if(!c){cur=null;return vClients()}
+ const b=bal(c.id);
+ const txs=S.tx.filter(t=>t.cid===c.id).sort((a,b)=>ok(b).localeCompare(ok(a)));
+ let h=`<button class="link" data-act="back">ফিরে যান</button><div class="head"><h1>${esc(c.name)}<span class="tag ${catOf(c)}">${CATS[catOf(c)]}</span></h1><button class="link" data-act="editc">তথ্য বদলান</button></div>`;
+ if(showForm)return h+`<div class="card">${cForm(c)}<div style="margin-top:14px"><button class="btn" data-act="updc">সংরক্ষণ করুন</button></div><div style="margin-top:8px"><button class="btn ghost" data-act="editc">বাতিল</button></div><div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--ln)"><button class="btn ghost" style="color:var(--red);border-color:var(--red)" data-act="hidec">${hideAsk===c.id?"নিশ্চিত? আবার চাপুন":"🗑️ তালিকা থেকে সরান"}</button><p class="mut" style="font-size:14px;margin-top:6px">পুরনো হিসাব, স্টক আর রিপোর্ট ঠিক থাকবে। শুধু তালিকা থেকে নাম সরে যাবে।</p></div></div>`;
+ const lg=lastGive(c.id),ds=daysSince(lg);
+ h+=`<p class="mut" style="margin:-2px 0 12px;font-size:15px">${c.loc?'📍 '+esc(c.loc)+'<br>':''}${c.phone?'📞 '+esc(c.phone)+'<br>':''}${lg?'শেষ মাল নিয়েছে: '+fd(lg)+' ('+n(ds)+' দিন আগে)':'এখনো মাল নেয়নি'}${c.note?'<br>📝 '+esc(c.note):''}</p>`;
+ if(waNum(c)){const T=[['নতুন মাল','আসসালামু আলাইকুম '+c.name+', নতুন মাল এসেছে। কিছু লাগলে জানাবেন। ধন্যবাদ।'],['অফার','আসসালামু আলাইকুম '+c.name+', এই সপ্তাহে বিশেষ অফার চলছে। বিস্তারিত জানতে মেসেজ দিন।'],['খোঁজ নেওয়া','আসসালামু আলাইকুম '+c.name+', কেমন আছেন? অনেক দিন কথা হয় না। কোনো মাল লাগলে জানাবেন।'],['ধন্যবাদ','ধন্যবাদ '+c.name+', আমাদের সাথে ব্যবসা করার জন্য। 🤝']];
+ h+=`<div class="card" style="margin:0 0 12px"><b>💬 হোয়াটসঅ্যাপে মেসেজ পাঠান</b><div class="chips" style="margin:8px 0">${T.map(x=>`<button data-act="tpl" data-m="${esc(x[1])}">${x[0]}</button>`).join('')}</div><textarea id="cm" style="font-size:16px" placeholder="এখানে মেসেজ লিখুন, বা ওপরের একটা বেছে নিন"></textarea><div style="margin-top:10px"><a id="cmsend" class="btn get" target="_blank" rel="noopener" data-ph="${waNum(c)}" href="https://wa.me/${waNum(c)}">পাঠান</a></div></div>`}
+ h+=`<section class="hero"><p class="lab">${b<-0.005?"অগ্রিম জমা":"এর কাছে পাওনা"}</p><p class="big" style="color:var(${b<-0.005?"--grn":"--red"})">${fmt(Math.abs(b)<0.005?0:Math.abs(b))}</p></section>`;
+ h+=`<div class="two"><button class="btn give" data-act="new" data-type="give">মাল দিলাম</button><button class="btn get" data-act="new" data-type="get">টাকা পেলাম</button></div>`;
+ if(b>0.005)h+=`<div class='card'><b>টাকা পেলেন?</b><div style='display:flex;gap:8px;margin-top:8px'><input id='qpa' inputmode='decimal' placeholder='কত টাকা পেলেন (${curSym()})' style='flex:1'><button class='btn get' style='width:auto' data-act='quickpay'>জমা নিন</button></div></div>`;
+ const ph=(c.phone||"").replace(/\D/g,"");
+ if(ph&&b>0.005){const m=`আসসালামু আলাইকুম ${c.name}, আপনার কাছে আমার ${fmt(b)} বাকি আছে। সুবিধামতো পরিশোধ করলে খুশি হব। ধন্যবাদ।`;h+=`<div style="margin-top:10px"><a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/${ph}?text=${encodeURIComponent(m)}">হোয়াটসঅ্যাপে টাকার কথা মনে করান</a></div>`}
+ if(!ph)h+=`<div class="card"><label for="ph" style="margin-top:0">হোয়াটসঅ্যাপ নম্বর যোগ করুন (দেশের কোড সহ)</label><input id="ph" inputmode="tel" placeholder="60123456789"><div style="margin-top:10px"><button class="btn ghost" data-act="savephone">নম্বর সংরক্ষণ করুন</button></div></div>`;
+ h+=`<h2>লেনদেনের খাতা</h2>`;
+ if(!txs.length)return h+`<p class="empty">এখনো কোনো লেনদেন নেই।</p>`;
+ return h+`<ul class="list">${txs.map(t=>`<li class="tx"><div><b class="${t.type==="give"?"red":"grn"}">${isOld(t)?"পুরনো বাকি":t.type==="give"?"মাল দিলাম":"টাকা পেলাম"}: ${fmt(t.amt)}</b><small>${fd(t.date)}${t.note?" · "+esc(t.note):""}</small></div><div style="display:flex;flex-direction:column;align-items:flex-end">${billLink(t.id)?`<span class="del" style="color:var(--mut)">বিল:</span><a class="del" data-bl="bn" data-cid="${t.cid}" style="color:var(--grn);font-weight:600" target="_blank" rel="noopener" href="${billLink(t.id,'bn')}">বাংলা</a><a class="del" data-bl="en" data-cid="${t.cid}" style="color:var(--grn);font-weight:600" target="_blank" rel="noopener" href="${billLink(t.id,'en')}">English</a>`:`<button class="del" data-act="nophone">বিল পাঠান</button>`}<button class="del" data-act="edittx" data-id="${t.id}">বদলান</button><button class="del" data-act="deltx" data-id="${t.id}">${delId===t.id?"নিশ্চিত? আবার চাপুন":"মুছুন"}</button></div></li>`).join("")}</ul>`;
+}
+function vAdd(){add.manual=false;const E=add.editId?S.tx.find(x=>x.id===add.editId):null;if(add.editId&&!E)add.editId=null;
+ add.items=E?(E.lines||[]).map(l=>({pid:l.pid,q:l.q,pr:l.pr,cost:l.cost})):topProducts().map(p=>({pid:p.id,q:0,pr:p.sell||0}));add.q='';
+ const rowsH=`<div id='sale' style='display:${add.type==='give'?'block':'none'}'><label style='display:flex;align-items:center;gap:10px;font-weight:600;background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:10px 12px;margin-top:14px'><input type='checkbox' id='aold' style='width:24px;min-height:24px;flex:none' ${E&&isOld(E)?'checked':''}> <span class='ck-t'><b>এটা পুরনো বাকি</b><small>আগের হিসাব, আজকের মাল নয়</small></span></label><label>কত পিস বিক্রি হয়েছে</label><ul class='list' id='items' style='display:${add.items.length?'block':'none'}'>${itemsHtml()}</ul><button class='btn ghost' data-act='toggleadd' style='margin-top:10px'>+ প্রোডাক্ট যোগ করুন</button><div id='addp' class='card' style='display:none'><label for='isq' style='margin-top:0'>তালিকা থেকে খুঁজুন</label><input id='isq' autocomplete='off' placeholder='মালের নাম লিখুন'><div id='matches' style='margin-top:8px'>${matchHtml()}</div><p style='margin:14px 0 4px;font-weight:600'>তালিকায় নেই? নতুন প্রোডাক্ট বানান</p><label for='npn' style='margin-top:4px'>মালের নাম</label><input id='npn' autocomplete='off' placeholder='যেমন: Umobile'><label for='npq'>কত পিস দিলেন</label><input id='npq' inputmode='decimal' placeholder='যেমন: 5'><label for='nps'>বিক্রির দাম, প্রতি পিস (${curSym()})</label><input id='nps' inputmode='decimal' placeholder='যেমন: 28'><label for='npb'>কেনা দাম, প্রতি পিস (${curSym()}) — ইচ্ছা হলে</label><input id='npb' inputmode='decimal' placeholder='লাভ হিসাবের জন্য'><div style='margin-top:10px'><button class='btn' data-act='newprod'>প্রোডাক্ট সংরক্ষণ করে যোগ করুন</button></div></div><p class='mut' style='font-size:14px;margin-top:8px'>প্রতিটা মালের বাঁ ঘরে পিস, ডান ঘরে প্রতি পিসের দাম। ভুল হলে ঘরে চেপে ঠিক করে নিন।</p></div>`;
+ if(!VC().length)return `<h2>নতুন এন্ট্রি</h2><p class="empty">এন্ট্রি দেওয়ার আগে অন্তত একজন ক্লায়েন্ট যোগ করুন।</p><button class="btn" data-act="goclients">ক্লায়েন্ট যোগ করুন</button>`;
+ const opts=VC().sort((a,b)=>a.name.localeCompare(b.name)).map(c=>`<option value="${c.id}"${c.id===add.cid?" selected":""}>${esc(c.name)}</option>`).join("");
+ return `<h2 style="margin-top:4px">${E?"এন্ট্রি বদলান":"নতুন এন্ট্রি"}</h2><div class="seg"><button data-act="settype" data-type="give" class="${add.type==="give"?"on":""}">মাল দিলাম</button><button data-act="settype" data-type="get" class="${add.type==="get"?"on":""}">টাকা পেলাম</button></div>
+ <label for="ac">ক্লায়েন্ট</label><select id="ac"><option value="">বেছে নিন</option>${opts}</select>
+ ${rowsH}<label for="aa">টাকার অঙ্ক (${curSym()})</label><input id="aa" inputmode="decimal" autocomplete="off" value="${E?E.amt:""}">
+ <label for="an">নোট (ইচ্ছা হলে)</label><input id="an" autocomplete="off" placeholder="যেমন: Maxis-10*30=300/Celcom-5*28=140" value="${E?esc(E.note||""):""}"><p id="hint" class="mut" style="font-size:15px;margin-top:6px"></p>
+ <label for="ad">তারিখ</label><input id="ad" type="date" value="${E?E.date:today()}">
+ <div style="margin-top:18px"><button id="sv" class="btn ${add.type}" data-act="saveadd">${E?"পরিবর্তন সংরক্ষণ করুন":(add.type==="give"?"মাল দেওয়া":"টাকা পাওয়া")+" সংরক্ষণ করুন"}</button></div>${E?'<div style="margin-top:10px"><button class="btn ghost" data-act="canceledit">বাতিল করুন</button></div>':""}`;
+}
+function daySale(d){return S.tx.filter(t=>t.type==='give'&&!isOld(t)&&t.date===d).reduce((a,t)=>a+t.amt,0)+cashSum(x=>x.date===d).s}
+function kfmt(v){v=Math.round(v);return v>=100000?n(Math.round(v/1000))+'k':v>=10000?n(Math.round(v/100)/10)+'k':n(v)}
+function week7(){const DN=['রবি','সোম','মঙ্গল','বুধ','বৃহঃ','শুক্র','শনি'];const days=[];for(let k=6;k>=0;k--){const d=dAgo(k);days.push({d,v:daySale(d),k})}
+ let prev=0;for(let k=7;k<=13;k++)prev+=daySale(dAgo(k));
+ const tot=days.reduce((a,x)=>a+x.v,0),mx=Math.max(1,...days.map(x=>x.v)),best=days.reduce((a,x)=>x.v>a.v?x:a,days[0]);
+ const ch=prev>0?Math.round((tot-prev)/prev*100):null;
+ const badge=ch===null?'':`<span class="wk-b ${ch>=0?'up':'dn'}">${ch>=0?'▲':'▼'} ${n(Math.abs(ch))}%</span>`;
+ const bars=days.map(x=>{const h=x.v>0?Math.max(6,Math.round(x.v/mx*100)):3,dn=DN[new Date(x.d+'T00:00:00').getDay()];
+  return `<div class="wk-c${x.k===0?' now':''}"><span class="wk-v">${x.v>0?kfmt(x.v):''}</span><div class="wk-t"><div class="wk-bar${x.v>0?'':' z'}" style="height:${h}%"></div></div><span class="wk-d">${x.k===0?'আজ':dn}</span></div>`}).join('');
+ return `<section class="wk"><div class="wk-h"><div><p class="wk-l">গত ৭ দিনের বিক্রি</p><p class="wk-s">${fmt(tot)} ${badge}</p></div>${best.v>0?`<p class="wk-best">সেরা দিন<br><b>${best.k===0?'আজ':DN[new Date(best.d+'T00:00:00').getDay()]}</b></p>`:''}</div><div class="wk-g">${bars}${tot>0?'':'<p class="wk-e">এই ৭ দিনে এখনো কোনো বিক্রি নেই।<br>মাল দিলে বা নগদ বিক্রি করলে এখানে দেখাবে।</p>'}</div>${ch!==null?`<p class="wk-f">আগের ৭ দিনের (${fmt(prev)}) তুলনায়</p>`:''}</section>`}
+function vReport(){
+ const m=rm;
+ const g=S.tx.filter(t=>t.type==="give"&&t.date.slice(0,7)===m).reduce((s,t)=>s+t.amt,0);
+ const r=S.tx.filter(t=>t.type==="get"&&t.date.slice(0,7)===m).reduce((s,t)=>s+t.amt,0);
+ const tot=withBal().filter(x=>x.b>0.005).reduce((s,x)=>s+x.b,0);
+ const pf=S.tx.filter(t=>t.type==='give'&&t.date.slice(0,7)===m).reduce((s,t)=>s+(t.lines||[]).reduce((a,l)=>a+(l.pr-l.cost)*l.q,0),0);
+ const cm=cashSum(x=>x.date.slice(0,7)===m);
+ const now=new Date(today()+"T00:00:00");
+ const late=[];
+ withBal().forEach(x=>{if(x.b<=0.005)return;const mine=S.tx.filter(t=>t.cid===x.c.id);const gets=mine.filter(t=>t.type==="get").map(t=>t.date).sort();const gives=mine.filter(t=>t.type==="give").map(t=>t.date).sort();const base=gets.length?gets[gets.length-1]:gives[0];if(!base)return;const days=Math.floor((now-new Date(base+"T00:00:00"))/864e5);if(days>=30)late.push({c:x.c,b:x.b,days})});
+ late.sort((a,b)=>b.days-a.days);
+ let h=week7()+`<div class="head" style="align-items:center"><button class="link" data-act="mprev">আগের মাস</button><b>${mlabel(m)}</b><button class="link" data-act="mnext">পরের মাস</button></div><div class="card" style="margin-top:0"><div class="stat"><span class="sl"><i class="si r1" aria-hidden="true">🛒</i><span>মোট বিক্রি<small>মাল দেওয়া</small></span></span><b class="red">${fmt(g)}</b></div><div class="stat"><span class="sl"><i class="si r3" aria-hidden="true">📈</i><span>লাভ<small>মাল-হিসাব মেলা বিক্রি থেকে</small></span></span><b class="grn">${fmt(pf)}</b></div><div class="stat"><span class="sl"><i class="si r1" aria-hidden="true">💵</i><span>নগদ বিক্রি</span></span><b>${fmt(cm.s)}</b></div><div class="stat"><span class="sl"><i class="si r3" aria-hidden="true">💹</i><span>নগদ বিক্রির লাভ</span></span><b class="grn">${fmt(cm.p)}</b></div><div class="stat tot"><span class="sl"><i class="si r5" aria-hidden="true">🏆</i><span>মোট লাভ<small>সব মিলিয়ে</small></span></span><b class="grn">${fmt(pf+cm.p)}</b></div><div class="stat"><span class="sl"><i class="si r2" aria-hidden="true">✅</i><span>টাকা পাওয়া গেছে</span></span><b class="grn">${fmt(r)}</b></div><div class="stat"><span class="sl"><i class="si r4" aria-hidden="true">💰</i><span>মোট পাওনা<small>এখন পর্যন্ত</small></span></span><b>${fmt(tot)}</b></div></div>`;
+ h+=`<h2>৩০ দিনের বেশি টাকা দেননি${late.length?` <span class="h2c">${n(late.length)}</span>`:''}</h2>`;
+ h+=late.length?`<ul class="list">${late.map(x=>`<li><button class="row" data-act="open" data-id="${x.c.id}"><span class="nmw">${av(x.c.name)}<span style="min-width:0"><b class="pn">${esc(x.c.name)}</b><span class="lt-d">⏳ ${n(x.days)} দিন হয়ে গেছে</span></span></span><span class="red">${fmt(x.b)}</span></button></li>`).join("")}</ul>`:`<div class="okc"><div class="okc-i">✅</div><div><b>দারুণ! সবাই নিয়মিত টাকা দিচ্ছে</b><p>৩০ দিনের বেশি কারো টাকা বাকি পড়ে নেই।</p></div></div>`;
+ {const B=S.settings||{},F=(id,ic,lab,ph,v,im)=>`<label for="${id}">${lab}</label><div class="fi"><span class="fi-i">${ic}</span><input id="${id}" autocomplete="off"${im?` inputmode="${im}"`:''}${ph?` placeholder="${ph}"`:''} value="${esc(v||'')}"></div>`;
+ h+=`<h2>বিলে আপনার ব্যবসার তথ্য</h2><div class="card bz" style="margin-top:0"><p class="mut bz-t">এগুলো লিখলে হোয়াটসঅ্যাপ বিলের ওপরে-নিচে আপনার ব্যবসার নাম দেখাবে।</p>
+ <div class="bz-pv" aria-hidden="true"><p class="bz-pl">বিলে যেমন দেখাবে</p><b id="pv-n">🏪 ${esc((B.name||'').toUpperCase())||'—'}</b><i id="pv-t">${esc(B.tag||'')}</i><span class="bz-ln"></span><small id="pv-f">${esc([B.name,B.phone].filter(Boolean).join('  ·  '))}</small></div>
+ ${F('bn','🏪','ব্যবসার নাম','যেমন: Forhad Telecom',B.name)}${F('bt','✏️','এক লাইনে পরিচয় (ইচ্ছা হলে)','যেমন: সিম ও রিচার্জ পাইকারি সাপ্লায়ার',B.tag)}${F('bp','📞','যোগাযোগ নম্বর (ইচ্ছা হলে)','যেমন: 60123456789',B.phone,'tel')}${F('bpay','💳','টাকা পাঠানোর তথ্য (ইচ্ছা হলে)','যেমন: Maybank 1234… / TNG 01X…',B.pay)}
+ <div style="margin-top:16px"><button class="btn" data-act="savebiz">💾 সংরক্ষণ করুন</button></div></div>`;}
+ h+=`<h2>ব্যাকআপ</h2><p class="mut" style="font-size:15px">আপনার তথ্য আপনার জিমেইল অ্যাকাউন্টের নামে অনলাইনে জমা থাকে, আর ফোনেও একটা কপি থাকে। তবু মাঝেমধ্যে ব্যাকআপ কপি করে নিজের হোয়াটসঅ্যাপ বা নোটে রেখে দিন।</p><div style="margin-top:10px"><button class="btn ghost" data-act="backup">ব্যাকআপ কপি করুন</button></div><label for="bk">ব্যাকআপ ফিরিয়ে আনতে এখানে পেস্ট করুন</label><textarea id="bk"></textarea><div style="margin-top:10px"><button class="btn ghost" data-act="restore">ব্যাকআপ থেকে ফিরিয়ে আনুন</button></div>`;
+ h+=payOwnerCard();
+ h+=helpCard();
+ h+=profCard();
+ h+=curCard();
+ h+=langCard();
+ h+=`<h2>অ্যাকাউন্ট</h2><div class="card" style="margin-top:0"><p class="mut" style="font-size:15px">লগইন করা আছে: <b>${esc(EMAIL)}</b></p>${subTxt()}${payBtn()}<div style="margin-top:10px"><button class="btn ghost" data-act="logout">লগআউট</button></div><div class="acl"><a href="privacy.html" target="_blank" rel="noopener">🔒 গোপনীয়তা নীতি</a><button data-act="delacc">🗑️ অ্যাকাউন্ট মুছে ফেলুন</button></div></div>`;
+ return h;
+}
+function curCard(){const k=curCC();return `<h2>মুদ্রা</h2><div class="card" style="margin-top:0"><p class="mut" style="font-size:15px">সব হিসাব এই মুদ্রায় দেখাবে। দেশ অনুযায়ী নিজে থেকেই ঠিক হয়, চাইলে বদলাতে পারেন।</p><select id="cursel">${CC.map(c=>`<option value="${c[0]}"${c[0]===k?" selected":""}>${c[1]} ${c[2]} — ${CURM[c[0]]}</option>`).join("")}</select></div>`}
+document.addEventListener("change",e=>{if(!e.target||e.target.id!=="cursel")return;S.settings=S.settings||{};S.settings.cur=e.target.value;try{save(["stock"])}catch(x){}render();toast("মুদ্রা বদলানো হয়েছে");});
+let cs={pid:''};
+const cashSum=fn=>(S.cash||[]).filter(fn).reduce((a,x)=>({s:a.s+x.q*x.pr,p:a.p+x.q*(x.pr-x.cost)}),{s:0,p:0});
+const dAgo=k=>{const d=new Date();d.setDate(d.getDate()-k);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+function csList(){const k=(($('#csq')||{}).value||'').trim().toLowerCase();const r=S.products.filter(p=>!p.off&&(!k||p.name.toLowerCase().includes(k)));
+ return r.length?`<ul class='list'>${r.map(p=>`<li><button class='row' data-act='cspick' data-id='${p.id}'><span>${esc(p.name)}<small class='mut' style='display:block;font-size:14px'>কেনা ${fmt(p.buy||0)} · বিক্রি ${fmt(p.sell||0)}</small></span><span class='grn'>বেছে নিন</span></button></li>`).join('')}</ul>`:`<p class='empty'>${k?'এই নামে কোনো মাল নেই। নিচে নতুন মাল যোগ করুন।':'এখনো কোনো মাল নেই। নিচে প্রথম মাল যোগ করুন।'}</p>`}
+function csProf(){const p=S.products.find(x=>x.id===cs.pid),el=$('#cprof');if(!p||!el)return;const q=num($('#cq').value)||0,pr=num($('#cp').value)||0;
+ el.innerHTML=q>0&&pr>0?`মোট বিক্রি ${fmt(q*pr)} · <span class='${pr>=(p.buy||0)?'grn':'red'}'>লাভ ${fmt(q*(pr-(p.buy||0)))}</span>`:'বিক্রির দাম লিখলে লাভ এখানে দেখাবে'}
+function vCash(){
+ const t0=cashSum(x=>x.date===today()),t30=cashSum(x=>x.date>=dAgo(29));
+ let h=`<button class="link" data-tab="home">ফিরে যান</button><div class="head"><h1>💵 নগদ বিক্রি</h1></div>`;
+ h+=`<div class="card" style="margin-top:0"><div class="stat"><span>আজকের বিক্রি</span><b>${fmt(t0.s)}</b></div><div class="stat"><span>আজকের লাভ</span><b class="grn">${fmt(t0.p)}</b></div><div class="stat"><span>শেষ ৩০ দিনের বিক্রি</span><b>${fmt(t30.s)}</b></div><div class="stat"><span>শেষ ৩০ দিনের লাভ</span><b class="grn">${fmt(t30.p)}</b></div></div>`;
+ const p=S.products.find(x=>x.id===cs.pid);
+ if(p){
+  h+=`<div class="card" style="border-left:4px solid #0F5E59"><b style="font-size:19px">${esc(p.name)}</b><p class="mut" style="font-size:15px">কেনা দাম: ${fmt(p.buy||0)} প্রতি পিস · স্টকে ${n(stockOf(p.id))} পিস</p>
+  <label for="cq">কত পিস বিক্রি করলেন</label><input id="cq" inputmode="decimal" value="1">
+  <label for="cp">বিক্রির দাম (প্রতি পিস, ${curSym()})</label><input id="cp" inputmode="decimal" value="${p.sell||''}" placeholder="যেমন: 20">
+  <p id="cprof" style="margin-top:10px;font-weight:600"></p>
+  <div style="margin-top:12px"><button class="btn get" data-act="cssave">বিক্রি সংরক্ষণ করুন</button></div>
+  <div style="margin-top:8px"><button class="btn ghost" data-act="cschange">অন্য মাল বেছে নিন</button></div></div>`;
+ }else{
+  h+=`<h2>কোন মাল বিক্রি করলেন?</h2><input id="csq" autocomplete="off" placeholder="মালের নাম লিখে খুঁজুন"><div id="csl" style="margin-top:8px">${csList()}</div>
+  <div class="card"><b>তালিকায় নেই? নতুন মাল যোগ করুন</b><label for="cpn">মালের নাম</label><input id="cpn" autocomplete="off" placeholder="যেমন: Charger"><label for="cpb">কেনা দাম (প্রতি পিস, ${curSym()})</label><input id="cpb" inputmode="decimal" placeholder="যেমন: 10"><label for="cps">সাধারণ বিক্রির দাম (${curSym()}, ইচ্ছা হলে)</label><input id="cps" inputmode="decimal" placeholder="যেমন: 20"><div style="margin-top:12px"><button class="btn ghost" data-act="csnew">মাল যোগ করে বিক্রি লিখুন</button></div></div>`;
+ }
+ const L=(S.cash||[]).slice().sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id)).slice(0,30);
+ h+=`<h2>সাম্প্রতিক নগদ বিক্রি</h2>`;
+ if(!L.length)return h+`<p class="empty">এখনো কোনো নগদ বিক্রি নেই।</p>`;
+ return h+`<ul class="list">${L.map(x=>`<li class="tx"><div><b>${esc(pn(x.pid))}: ${n(x.q)} × ${fmt(x.pr)} = ${fmt(x.q*x.pr)}</b><small>${fd(x.date)} · লাভ ${fmt(x.q*(x.pr-x.cost))}</small></div><button class="del" data-act="csdel" data-id="${x.id}">${delId===x.id?"নিশ্চিত? আবার চাপুন":"মুছুন"}</button></li>`).join('')}</ul>`;
+}
+document.addEventListener('input',e=>{const id=e.target.id;if(id==='csq'){const l=$('#csl');if(l)l.innerHTML=csList()}else if(id==='cq'||id==='cp')csProf()});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+ if(a==='cash'){cs={pid:''};go('home','__cash')}
+ else if(a==='cspick'){cs.pid=t.dataset.id;delId=null;render();csProf();scrollTo(0,0)}
+ else if(a==='cschange'){cs.pid='';render()}
+ else if(a==='csnew'){const nm=$('#cpn').value.trim();if(!nm){toast('আগে মালের নাম লিখুন');$('#cpn').focus();return}const buy=num($('#cpb').value)||0,sell=num($('#cps').value)||0;let p=S.products.find(x=>x.name.trim().toLowerCase()===nm.toLowerCase());if(p){p.off=false;if(buy)p.buy=buy;if(sell)p.sell=sell}else{p={id:uid(),name:nm,buy,sell,low:0};S.products.push(p)}save(['stock']);cs.pid=p.id;render();csProf();toast('মাল তালিকায় যোগ হয়েছে')}
+ else if(a==='cssave'){const p=S.products.find(x=>x.id===cs.pid);if(!p)return;const q=num($('#cq').value),pr=num($('#cp').value);if(!(q>0)){toast('কত পিস বিক্রি করলেন লিখুন');$('#cq').focus();return}if(!(pr>0)){toast('বিক্রির দাম লিখুন');$('#cp').focus();return}
+  S.cash=S.cash||[];S.cash.push({id:uid(),pid:p.id,q,pr,cost:p.buy||0,date:today()});save(['stock']);const pf=q*(pr-(p.buy||0));cs.pid='';render();scrollTo(0,0);toast('সংরক্ষিত হয়েছে। লাভ '+fmt(pf))}
+ else if(a==='csdel'){const id=t.dataset.id;if(delId===id){S.cash=(S.cash||[]).filter(x=>x.id!==id);delId=null;save(['stock']);render();toast('মুছে ফেলা হয়েছে')}else{delId=id;render()}}
+});
+function render(){try{helpUpd()}catch(e){}
+ if(HUB){$('#nav').style.display='none';$('#app').innerHTML=HUB==='probash'?vProbash():HUB==='cidb'?vCidb():HUB==='med'?vMed():vHub();return}
+ $('#nav').style.display='';
+ document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
+ $('#app').innerHTML=(cur==='__pay'||cur==='__own'?'':subBanner())+(cur==='__own'?vOwner():cur==='__pay'?vPay():cur==='__b'?vBcast():cur==='__cash'?vCash():cur?vClient():(tab==='stock'&&curP)?vProduct():({home:vHome,clients:vClients,add:vAdd,stock:vStock,report:vReport})[tab]());
+}
+document.addEventListener("click",e=>{
+ const t=e.target.closest("[data-tab],[data-act]");if(!t)return;
+ if(t.dataset.tab){add.editId=null;go(t.dataset.tab);return}
+ const a=t.dataset.act;
+ if(a==="new"){add.editId=null;add.type=t.dataset.type;add.cid=cur||add.cid;go("add")}
+ else if(a==='mprev'){rm=shiftM(rm,-1);render()}
+ else if(a==='mnext'){rm=shiftM(rm,1);render()}
+ else if(a==='saveprod'){const nm=$('#pn').value.trim();if(!nm){toast('আগে মালের নাম লিখুন');$('#pn').focus();return}const qty=num($('#pq').value)||0,buy=num($('#pb').value)||0,sell=num($('#ps').value)||0,low=num($('#pl').value)||0;let p=S.products.find(x=>x.name.trim().toLowerCase()===nm.toLowerCase()),old=!!p;if(p){p.off=false;if(buy)p.buy=buy;if(sell)p.sell=sell;if(low)p.low=low}else{p={id:uid(),name:nm,buy,sell,low};S.products.push(p)}if(qty>0)S.stockIn.push({id:uid(),pid:p.id,qty,date:today(),buy});save(['stock']);showForm=false;render();const li=document.getElementById('pr_'+p.id);if(li){li.scrollIntoView({block:'center',behavior:'smooth'});li.style.background='var(--gb)';setTimeout(()=>{li.style.background=''},3000)}toast((old?nm+' আগেই ছিল, আপডেট হয়েছে':nm+' যোগ হয়েছে')+'। স্টক এখন '+n(stockOf(p.id))+' পিস')}
+ else if(a==='savebiz'){S.settings={name:$('#bn').value.trim(),tag:$('#bt').value.trim(),phone:$('#bp').value.trim(),pay:$('#bpay').value.trim()};save(['stock']);toast('ব্যবসার তথ্য সংরক্ষিত হয়েছে। এখন থেকে বিলে দেখাবে।')}
+ else if(a==='openp'){curP=t.dataset.id;render();scrollTo(0,0)}
+ else if(a==='backp'){curP=null;delId=null;render()}
+ else if(a==='savein'){const p=S.products.find(x=>x.id===t.dataset.id),qty=num($('#sq').value);if(!(qty>0)){toast('কত পিস এসেছে সেটা লিখুন');return}const b=num($('#sb').value)||0;S.stockIn.push({id:uid(),pid:p.id,qty,date:$('#sd').value||today(),buy:b});if(b>0)p.buy=b;save(['stock']);render();toast('স্টকে যোগ হয়েছে। এখন স্টক '+n(stockOf(p.id))+' পিস')}
+ else if(a==='delprod'){const id=t.dataset.id;if(delId==='P'+id){const used=S.tx.some(x=>(x.lines||[]).some(l=>l.pid===id))||(S.cash||[]).some(c=>c.pid===id);if(used){const p=S.products.find(x=>x.id===id);if(p)p.off=true}else{S.products=S.products.filter(x=>x.id!==id);S.stockIn=S.stockIn.filter(x=>x.pid!==id)}delId=null;curP=null;save(['stock']);render();scrollTo(0,0);toast('মালটা তালিকা থেকে মুছে ফেলা হয়েছে')}else{delId='P'+id;render()}}
+ else if(a==='saveprice'){const p=S.products.find(x=>x.id===t.dataset.id);const nn=$('#en').value.trim();if(nn)p.name=nn;p.buy=num($('#eb').value)||0;p.sell=num($('#es').value)||0;save(['stock']);render();toast('দাম সংরক্ষিত হয়েছে')}
+ else if(a==='delin'){if(delId===t.dataset.id){S.stockIn=S.stockIn.filter(x=>x.id!==delId);delId=null;save(['stock']);render();toast('মুছে ফেলা হয়েছে')}else{delId=t.dataset.id;render()}}
+ else if(a==='toggleadd'){const d=$('#addp');const open=d.style.display==='none';d.style.display=open?'block':'none';if(open)$('#isq').focus()}
+ else if(a==='newprod'){const nm=$('#npn').value.trim();if(!nm){toast('আগে মালের নাম লিখুন');$('#npn').focus();return}const q0=num($('#npq').value)||0,sell=num($('#nps').value)||0,buy=num($('#npb').value)||0;let p=S.products.find(x=>x.name.trim().toLowerCase()===nm.toLowerCase());if(p){p.off=false;if(sell)p.sell=sell;if(buy)p.buy=buy}else{p={id:uid(),name:nm,buy,sell,low:0};S.products.push(p)}save(['stock']);const ex=add.items.find(x=>x.pid===p.id);if(ex){if(q0)ex.q=q0;if(sell)ex.pr=sell}else add.items.push({pid:p.id,q:q0,pr:sell||p.sell||0});['#npn','#npq','#npb','#nps','#isq'].forEach(x=>{const e=$(x);if(e)e.value=''});add.q='';$('#addp').style.display='none';redrawItems();const qs=document.querySelectorAll('.sq'),k=add.items.findIndex(x=>x.pid===p.id),el=qs[k];if(el){const li=el.closest('li');li.scrollIntoView({block:'center',behavior:'smooth'});li.style.background='var(--gb)';setTimeout(()=>{li.style.background=''},2500);if(!q0)el.focus()}toast(nm+' যোগ হয়েছে'+(q0?'':', এবার পিস লিখুন'))}
+ else if(a==='additem'){const p=S.products.find(x=>x.id===t.dataset.id);if(p&&!add.items.some(i=>i.pid===p.id))add.items.push({pid:p.id,q:0,pr:p.sell||0});add.q='';$('#isq').value='';redrawItems();const qs=document.querySelectorAll('.sq');if(qs.length)qs[qs.length-1].focus()}
+ else if(a==='rmitem'){add.items.splice(+t.dataset.i,1);redrawItems()}
+ else if(a==='quickpay'){const amt=num($('#qpa').value);if(!(amt>0)){toast('কত টাকা পেলেন সেটা লিখুন');return}const id=uid(),cid=cur,c=S.clients.find(x=>x.id===cid);S.tx.push({id,cid,type:'get',amt,note:'',date:today(),lines:[]});save([cid]);go('clients',cid);showBanner(id,c)}
+ else if(a==="nophone"){toast("আগে ক্লায়েন্টের হোয়াটসঅ্যাপ নম্বর যোগ করুন");window.scrollTo(0,0)}
+ else if(a==="edittx"){const x=S.tx.find(y=>y.id===t.dataset.id);if(!x)return;add.editId=x.id;add.type=x.type;add.cid=x.cid;tab="add";cur=null;showForm=false;delId=null;render();scrollTo(0,0)}
+ else if(a==="canceledit"){const c0=add.cid;add.editId=null;go("clients",c0)}
+ else if(a==="open")go("clients",t.dataset.id);
+ else if(a==="back")go("clients");
+ else if(a==="goclients"){tab="clients";cur=null;showForm=true;render();scrollTo(0,0)}
+ else if(a==="toggleform"){showForm=!showForm;render()}
+ else if(a==="saveclient"){
+  const f=readForm(),name=f.name;
+  if(!name){toast("আগে নাম লিখুন");return}
+  const old=HC().find(c=>nmK(c.name)===nmK(name));
+  if(old){old.hidden=false;delete old.hidden;['loc','phone','note'].forEach(k=>{if(f[k])old[k]=f[k]});if(f.cat)old.cat=f.cat;const due0=num(($("#cdue")||{}).value||"");if(due0>0)S.tx.push({id:uid(),cid:old.id,type:'give',amt:due0,note:'পুরনো বাকি',date:today(),old:true,lines:[]});save([old.id]);showForm=false;go('clients',old.id);toast(old.name+" আগের সব হিসাবসহ ফিরে এসেছে");return}
+  const nid=uid();S.clients.push({id:nid,...f});const due=num(($("#cdue")||{}).value||"");if(due>0)S.tx.push({id:uid(),cid:nid,type:'give',amt:due,note:'পুরনো বাকি',date:today(),old:true,lines:[]});save([nid]);showForm=false;render();toast(name+" যোগ হয়েছে");
+ }
+ else if(a==="tpl"){const m=$('#cm');m.value=t.dataset.m;updSend();m.focus()}
+ else if(a==="cat"){cat=t.dataset.k;render()}
+ else if(a==="editc"){showForm=!showForm;hideAsk=null;render()}
+ else if(a==="hidec"){const c=S.clients.find(x=>x.id===cur);if(!c)return;const b=bal(c.id);
+  if(b>0.005){toast("এর কাছে এখনো "+fmt(b)+" বাকি আছে। বাকি শূন্য হলে তালিকা থেকে সরানো যাবে।");return}
+  if(b<-0.005){toast("এর "+fmt(-b)+" অগ্রিম জমা আছে। হিসাব শূন্য হলে তালিকা থেকে সরানো যাবে।");return}
+  if(hideAsk!==c.id){hideAsk=c.id;render();return}
+  hideAsk=null;c.hidden=true;save([c.id]);go('clients');toast(c.name+" তালিকা থেকে সরানো হয়েছে। হিসাব ঠিক আছে।")}
+ else if(a==="unhide"){const c=S.clients.find(x=>x.id===t.dataset.id);if(!c)return;delete c.hidden;save([c.id]);go('clients',c.id);toast(c.name+" আগের সব হিসাবসহ ফিরে এসেছে")}
+ else if(a==="updc"){const f=readForm();if(!f.name){toast("আগে নাম লিখুন");return}const c=S.clients.find(x=>x.id===cur);Object.assign(c,f);save([c.id]);showForm=false;render();toast("তথ্য সংরক্ষিত হয়েছে")}
+ else if(a==="bcast"){tab="clients";cur="__b";showForm=false;render();scrollTo(0,0)}
+ else if(a==="bc"){bc=t.dataset.k;const m=$('#bm').value;$('#app').innerHTML=vBcast();$('#bm').value=m}
+ else if(a==="bsend"){const m=$('#bm').value.trim();if(!m){toast("আগে মেসেজ লিখুন");$('#bm').focus();return}const c=S.clients.find(x=>x.id===t.dataset.id);if(!c)return;window.open("https://wa.me/"+waNum(c)+"?text="+encodeURIComponent(m.replace(/\{নাম\}/g,c.name)),"_blank","noopener");sent.add(c.id);if((S.settings||{}).lastMsg!==m){S.settings=Object.assign({},S.settings,{lastMsg:m});save(['stock'])}t.className="btn ghost";t.textContent="✓ পাঠানো"}
+ else if(a==="savephone"){
+  const p=$("#ph").value.trim();if(!p.replace(/\D/g,"")){toast("নম্বর লিখুন");return}
+  const c=S.clients.find(x=>x.id===cur);c.phone=p;save([c.id]);render();toast("নম্বর সংরক্ষিত হয়েছে");
+ }
+ else if(a==="settype"){
+  add.type=t.dataset.type;
+  document.querySelectorAll(".seg button").forEach(b=>b.classList.toggle("on",b.dataset.type===add.type));
+  const s=$("#sv");const sl=$('#sale');if(sl)sl.style.display=add.type==='give'?'block':'none';s.className="btn "+add.type;if(!add.editId)s.textContent=(add.type==="give"?"মাল দেওয়া":"টাকা পাওয়া")+" সংরক্ষণ করুন";
+ }
+ else if(a==="saveadd"){
+  const cid=$("#ac").value,amt=num($("#an")?$("#aa").value:""),note=$("#an").value.trim(),date=$("#ad").value||today();
+  if(!cid){toast("ক্লায়েন্ট বেছে নিন");return}
+  if(!(amt>0)){toast("টাকার অঙ্ক সঠিকভাবে লিখুন");return}
+  if(add.editId){const x=S.tx.find(y=>y.id===add.editId);if(x){const oc=x.cid;const od=add.type==='give'&&$('#aold')&&$('#aold').checked;Object.assign(x,{cid,type:add.type,amt,note,date,old:od,lines:add.type==='give'&&!od?saleLines(note):[]});save(oc===cid?[cid]:[oc,cid]);add.editId=null;add.cid=cid;toast("পরিবর্তন সংরক্ষিত। "+S.clients.find(z=>z.id===cid).name+"-এর বাকি এখন "+fmt(Math.max(bal(cid),0)));go("clients",cid);return}}
+  const od=add.type==='give'&&$('#aold')&&$('#aold').checked;S.tx.push({id:uid(),cid,type:add.type,amt,note,date,old:od,lines:add.type==='give'&&!od?saleLines(note):[]});save([cid]);add.cid=cid;
+  const c=S.clients.find(x=>x.id===cid);const newId=S.tx[S.tx.length-1].id;
+  go("clients",cid);
+  const bl=billLink(newId);
+  $("#app").insertAdjacentHTML("afterbegin",`<div class="card" style="margin:0 0 12px;border-left:4px solid var(--grn)"><b>সংরক্ষিত হয়েছে।</b><p class="mut">${esc(c.name)}-এর বাকি এখন ${fmt(Math.max(bal(cid),0))}</p>${bl?`<div style="margin-top:10px">${billBtns(newId)}</div>`:`<p style="margin-top:8px">বিল পাঠাতে এই ক্লায়েন্টের হোয়াটসঅ্যাপ নম্বর দিন (নিচে নম্বরের ঘর আছে)।</p>`}</div>`);
+ }
+ else if(a==="deltx"){
+  if(delId===t.dataset.id){const tx0=S.tx.find(x=>x.id===delId);S.tx=S.tx.filter(x=>x.id!==delId);delId=null;save(tx0?[tx0.cid]:[]);render();toast("মুছে ফেলা হয়েছে")}
+  else{delId=t.dataset.id;render()}
+ }
+ else if(a==="backup"){
+  const ta=$("#bk");ta.value=JSON.stringify(S);ta.select();
+  try{navigator.clipboard.writeText(ta.value).then(()=>toast("ব্যাকআপ কপি হয়েছে"),()=>toast("নিচের লেখা হাতে কপি করে নিন"))}catch(x){toast("নিচের লেখা হাতে কপি করে নিন")}
+ }
+ else if(a==="restore"){
+  try{const p=JSON.parse($("#bk").value);if(!p||!Array.isArray(p.clients)||!Array.isArray(p.tx))throw 0;const old=S.clients.map(c=>c.id);S=p;S.products=S.products||[];S.stockIn=S.stockIn||[];S.cash=S.cash||[];dirty.add('stock');old.filter(i=>!S.clients.some(c=>c.id===i)).forEach(i=>gone.add(i));save("all");render();toast("খাতা ফিরে এসেছে")}
+  catch(x){toast("ব্যাকআপের লেখাটি ঠিক নেই")}
+ }
+});
+function noteTotal(t){
+ t=String(t).replace(/[০-৯]/g,d=>DG.indexOf(d));
+ let sum=0;
+ t.split(/[/;]+/).forEach(seg=>{
+  if(seg.includes("=")){const m=seg.split("=").pop().replace(/,/g,"").match(/-?[0-9]+(?:[.][0-9]+)?/);if(m)sum+=parseFloat(m[0])}
+  else{const m=seg.match(/([0-9]+(?:[.][0-9]+)?)[ ]*[*×xX][ ]*([0-9]+(?:[.][0-9]+)?)/);if(m)sum+=parseFloat(m[1])*parseFloat(m[2])}
+ });
+ return Math.round(sum*100)/100;
+}
+function updSend(){const m=$('#cm'),l=$('#cmsend');if(!m||!l)return;const v=m.value.trim();l.href="https://wa.me/"+l.dataset.ph+(v?"?text="+encodeURIComponent(v):"")}
+document.addEventListener("input",e=>{
+ const id=e.target.id;if(id==="cm")updSend();
+ if(id==="q"){q=e.target.value;$("#list").innerHTML=listHtml()}
+ else if(id==="aa"){add.manual=e.target.value.trim()!==""}
+ else if(id==="an"&&false){
+  const t=noteTotal(e.target.value),h=$("#hint"),a=$("#aa");
+  if(t>0){
+   if(!add.manual){a.value=t;h.textContent="নোট থেকে মোট "+fmt(t)+", টাকার ঘরে বসে গেছে।"}
+   else h.textContent="নোট থেকে মোট হয় "+fmt(t)+", কিন্তু টাকার ঘরে আপনার লেখা অঙ্কই থাকবে।";
+  }else{h.textContent="";if(!add.manual)a.value=""}
+  const L=add.type==='give'?parseLines(e.target.value):[];if(L.length)h.textContent+=' স্টক থেকে কমবে: '+L.map(l=>pn(l.pid)+' '+n(l.q)+' পিস').join(', ')+'।';
+ }
+});
+/* ===== হোম পেজ: আমাদের সেবাসমূহ ===== */
+var HUB=true;
+const HI={
+ khata:'<svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 21H20v-3"/><path d="M8.5 8h7M8.5 11.5h5"/></svg>',
+ globe:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>',
+ help:'<svg viewBox="0 0 24 24"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M19 19c0 1.5-1.5 2.5-4 2.5h-2"/></svg>',
+ card:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2"/><path d="M5.8 16c.5-1.5 1.5-2.2 2.7-2.2s2.2.7 2.7 2.2M14 10h4M14 13.5h3"/></svg>',
+ visa:'<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M9 16.5h6"/></svg>',
+ med:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M9 5V3.5h6V5M12 9.5v6M9 12.5h6"/></svg>'};
+const HI2={
+ back:'<svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>',
+ chev:'<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>',
+ clock:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+ spark:'<svg viewBox="0 0 24 24"><path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9z"/><path d="M19 14l.9 2.6 2.6.9-2.6.9L19 21l-.9-2.6-2.6-.9 2.6-.9z"/></svg>',
+ probash:'<svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="15" cy="17" r="10"/><path d="M5 17h20"/><path d="M15 7c3 2.8 4.4 6.1 4.4 10S18 24.2 15 27c-3-2.8-4.4-6.1-4.4-10S12 9.8 15 7z"/><path d="M21.5 4.5l5.5 1.2-1.2 5.5" stroke-width="2.2"/><path d="M27 5.7c-2.6 1.9-4.4 3.3-6.3 5.6" stroke-width="2.2"/></svg>',
+ help:'<svg viewBox="0 0 32 32"><circle cx="16" cy="13" r="5.6" fill="#fff"/><path d="M6.5 28.5c.9-5.3 4.6-8.2 9.5-8.2s8.6 2.9 9.5 8.2z" fill="#fff"/><path d="M8.6 14.5v-1.8a7.4 7.4 0 0 1 14.8 0v1.8" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round"/><rect x="6.6" y="12.2" width="4" height="6.2" rx="1.8" fill="#FFD66B"/><rect x="21.4" y="12.2" width="4" height="6.2" rx="1.8" fill="#FFD66B"/><path d="M23.4 18.3c0 2.4-1.8 3.6-4.6 3.8" fill="none" stroke="#FFD66B" stroke-width="1.9" stroke-linecap="round"/><circle cx="18.4" cy="22.1" r="1.4" fill="#FFD66B"/></svg>',
+ card:'<svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="24" height="18" rx="3.5"/><circle cx="11.5" cy="14.5" r="2.7" fill="#fff"/><path d="M7.6 21.3c.7-2 2.1-3 3.9-3s3.2 1 3.9 3"/><path d="M18.5 13h6M18.5 17.5h4.5"/></svg>',
+ visa:'<svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="4" width="18" height="24" rx="3"/><circle cx="16" cy="14" r="4.5"/><path d="M11.5 14h9M16 9.5c1.4 1.3 2 2.8 2 4.5s-.6 3.2-2 4.5c-1.4-1.3-2-2.8-2-4.5s.6-3.2 2-4.5z"/><path d="M12 23h8"/></svg>',
+ med:'<svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="22" height="19" rx="3.5"/><path d="M12 8V5.5h8V8"/><path d="M16 12.5v10M11 17.5h10" stroke-width="2.6"/></svg>',
+ shield:'<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>'};
+function bkBtn(act,label){return `<button class="bk-pill" data-act="${act}"><span class="bk-c">${HI2.back}</span><span>${label}</span></button>`}
+function pgHero(ic,cls,t,sub){return `<div class="pg-hero ${cls}"><span class="ap-ic">${ic}</span><div><h1>${t}</h1><p>${sub}</p><span class="chip">${HI2.shield}<span>সরকারি সাইট · নিরাপদ</span></span></div></div>`}
+function vHub(){
+ let nm=((PROF&&PROF.name)||'').trim();if(!nm){try{nm=((firebase.auth().currentUser||{}).displayName||'').split(' ')[0]}catch(e){}}
+ return `<p class="hub-hi"><span>আসসালামু আলাইকুম</span>${nm?' <span>'+esc(nm)+'</span>':''}</p><h2 style="margin-top:4px">আমাদের সেবাসমূহ</h2>
+<div class="hub-g">
+<button class="hub-i" data-act="hubkhata"><span class="hub-ic lg"><img src="icon-192.png" alt=""></span><span>গণনা খাতা<small>বাকি ও স্টকের হিসাব</small></span></button>
+<button class="hub-i" data-act="hubprobash"><span class="ap-ic ap-gold">${HI2.probash}</span><span>প্রবাস লিংক<small>ডিজিটাল সেবা</small></span></button>
+<button class="hub-i" data-act="help"><span class="ap-ic ap-blue">${HI2.help}</span><span>সাহায্য<small>হোয়াটসঅ্যাপে</small></span></button>
+</div><div class="soon-b"><span class="sp">${HI2.spark}</span><div><b>নতুন সেবা শীঘ্রই যোগ হবে</b><small>প্রবাসীদের জন্য আরও সুবিধা আসছে</small></div></div>`}
+function vProbash(){
+ const it=(ic,cls,t,d,act)=>act?`<button class="pl-i pl-b" data-act="${act}"><span class="ap-ic ${cls}">${ic}</span><div><b>${t}</b><small>${d}</small></div><span class="pl-go">${HI2.chev}</span></button>`:`<div class="pl-i pl-off"><span class="ap-ic ${cls}">${ic}</span><div><b>${t}</b><small>${d}</small></div><span class="pl-s">${HI2.clock}<span>শীঘ্রই আসছে</span></span></div>`;
+ return `${bkBtn('tohub','সব সেবা')}${pgHero(HI2.probash,'ap-gold','প্রবাস লিংক','প্রবাসীদের ডিজিটাল সেবা')}
+<div class="card">${it(HI2.card,'ap-teal','CIDB কার্ড চেক','কার্ড বৈধ আছে কিনা দেখুন','hubcidb')}${it(HI2.visa,'ap-indigo','ভিসা / পারমিট চেক','মালয়েশিয়া ইমিগ্রেশন')}${it(HI2.med,'ap-rose','মেডিকেল চেক','FOMEMA মেডিকেল স্ট্যাটাস','hubmed')}</div>
+<p class="hub-note">সব তথ্য সরাসরি সরকারি অফিসিয়াল ওয়েবসাইট থেকে দেখবেন। আপনার পাসপোর্ট নম্বর আমরা কোথাও সংরক্ষণ করি না।</p>`}
+const CIDB_URL='https://cims.cidb.gov.my/PBSearchv3/finder?lang=ms';
+function vCidb(){
+ return `${bkBtn('toprobash','প্রবাস লিংক')}${pgHero(HI2.card,'ap-teal','CIDB কার্ড চেক','কার্ড বৈধ আছে কিনা, মেয়াদ কবে শেষ')}
+<div class="card" style="padding:16px"><label for="cdn" style="margin-top:0">পাসপোর্ট নম্বর</label><input id="cdn" class="cd-in" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="যেমন: A01234567">
+<div style="margin-top:14px"><button class="btn get" data-act="cidbgo" data-url="cidb">📋 কপি করে CIDB সাইট খুলুন</button></div>
+<p class="mut" style="font-size:13.5px;margin-top:10px;text-align:center">নম্বরটা কপি হয়ে যাবে, তারপর CIDB-এর সরকারি সাইট খুলবে।</p></div>
+<h2>কীভাবে চেক করবেন</h2><div class="card" style="margin-top:0;padding:8px 16px"><ol class="cd-st">
+<li>উপরের ঘরে আপনার পাসপোর্ট নম্বর লিখুন।</li>
+<li>সবুজ বোতাম চাপুন। CIDB-এর সাইট খুলবে।</li>
+<li>সাইটে দুইটা গোল বৃত্ত আছে। নিচের দ্বিতীয় বৃত্তটা (পাসপোর্ট) চাপুন।</li>
+<li>সার্চ ঘরে আঙুল চেপে ধরে রাখুন, তারপর Paste চাপুন।</li>
+<li>সবুজ Carian বোতাম চাপুন।</li></ol></div>
+<h2>ফলাফলের মানে</h2><div class="card" style="margin-top:0;padding:4px 16px">
+<div class="stat"><span>Tempoh aktif</span><b>আর কত দিন মেয়াদ আছে</b></div>
+<div class="stat"><span>Tarikh tamat pendaftaran</span><b>মেয়াদ শেষের তারিখ</b></div>
+<div class="stat"><span>Kad telah dicetak</span><b>কার্ড প্রিন্ট হয়েছে</b></div>
+<div class="stat"><span>Dalam proses penghantaran</span><b>কার্ড পাঠানোর পথে</b></div>
+<div class="stat"><span>No. Jejak Konsainan</span><b>কুরিয়ার ট্র্যাকিং নম্বর</b></div></div>
+<h2>রেকর্ড পাওয়া না গেলে</h2><div class="card" style="margin-top:0;padding:14px 16px"><p style="font-size:15px;line-height:1.5">দ্বিতীয় বৃত্ত (পাসপোর্ট) বাছাই করেছেন কিনা আর নম্বর ঠিক আছে কিনা দেখুন। পাসপোর্ট নবায়ন করে থাকলে পুরনো পাসপোর্ট নম্বর দিয়েও চেষ্টা করুন। তারপরও না পেলে আপনার কোম্পানি বা এজেন্টের সাথে কথা বলুন।</p></div>
+<h2>সার্টিফিকেট লাগলে</h2><div class="card" style="margin-top:0;padding:14px 16px"><p style="font-size:15px;line-height:1.5">এই পেজে শুধু স্ট্যাটাস দেখা যায়। প্রিন্ট করার সার্টিফিকেট (Perakuan) লাগলে আপনার কোম্পানি বা এজেন্টের কাছে চান।</p></div>
+<p class="hub-note" style="margin-bottom:0">💡 Chrome "Save passport" জানতে চাইলে <b>No, thanks</b> চাপুন, যাতে নম্বর ফোনে সেভ না থাকে।</p>
+<p class="hub-note">সাইট না খুললে বা ধীরে চললে সেটা CIDB-এর সার্ভারের সমস্যা, কিছুক্ষণ পরে আবার চেষ্টা করুন। আপনার পাসপোর্ট নম্বর আমরা কোথাও সংরক্ষণ করি না।</p>`}
+const MED_URL='https://eservices.imi.gov.my/myimms/FomemaStatus?lang=en';
+function vMed(){
+ return `${bkBtn('toprobash','প্রবাস লিংক')}${pgHero(HI2.med,'ap-rose','মেডিকেল চেক','FOMEMA মেডিকেলে পাস না ফেল, মেয়াদ কবে পর্যন্ত')}
+<div class="card" style="padding:16px"><label for="cdn" style="margin-top:0">পাসপোর্ট নম্বর</label><input id="cdn" class="cd-in" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="যেমন: A01234567">
+<div style="margin-top:14px"><button class="btn get" data-act="cidbgo" data-url="med">📋 কপি করে মেডিকেল সাইট খুলুন</button></div>
+<p class="mut" style="font-size:13.5px;margin-top:10px;text-align:center">নম্বরটা কপি হয়ে যাবে, তারপর ইমিগ্রেশনের সরকারি সাইট খুলবে।</p></div>
+<h2>কীভাবে চেক করবেন</h2><div class="card" style="margin-top:0;padding:8px 16px"><ol class="cd-st">
+<li>উপরের ঘরে আপনার পাসপোর্ট নম্বর লিখুন।</li>
+<li>সবুজ বোতাম চাপুন। ইমিগ্রেশনের সাইট খুলবে, লোড হতে একটু সময় লাগতে পারে।</li>
+<li>প্রথম ঘর (Passport No.) চেপে ধরে রাখুন, তারপর Paste চাপুন।</li>
+<li>পাশের তালিকা থেকে দেশ BANGLADESH বাছাই করুন।</li>
+<li>Search বোতাম চাপুন।</li>
+<li>ফলাফলের টেবিল বড় হলে আঙুল দিয়ে ডানে-বামে সরিয়ে দেখুন।</li></ol></div>
+<h2>ফলাফলের মানে</h2><div class="card" style="margin-top:0;padding:4px 16px">
+<div class="stat"><span>Date Fomema</span><b>মেডিকেলের তারিখ</b></div>
+<div class="stat"><span>Deadline Fomema</span><b>রিপোর্টের মেয়াদ শেষ</b></div>
+<div class="stat"><span>FIT</span><b>পাস ✅</b></div>
+<div class="stat"><span>UNFIT</span><b>ফেল ❌</b></div>
+<div class="stat"><span>REVIEW</span><b>রিপোর্ট যাচাই চলছে</b></div>
+<div class="stat"><span>EXPIRED</span><b>মেয়াদ শেষ</b></div></div>
+<p class="hub-note">এখানে সাধারণত শুধু সর্বশেষ মেডিকেলের ফলাফল দেখায়। রেকর্ড না পেলে নম্বর আর দেশ ঠিক আছে কিনা দেখুন, তারপর আপনার কোম্পানির সাথে কথা বলুন।</p>
+<p class="hub-note">💡 Chrome "Save passport" জানতে চাইলে <b>No, thanks</b> চাপুন, যাতে নম্বর ফোনে সেভ না থাকে।</p>
+<p class="hub-note">সব তথ্য সরাসরি সরকারি সাইট থেকে দেখবেন। আপনার পাসপোর্ট নম্বর আমরা কোথাও সংরক্ষণ করি না।</p>`}
+function cpTxt(v){let ok=false;try{const t=document.createElement('textarea');t.value=v;t.setAttribute('readonly','');t.style.cssText='position:fixed;top:-100px;opacity:0';document.body.appendChild(t);t.select();ok=document.execCommand('copy');t.remove()}catch(e){}
+ if(!ok){try{navigator.clipboard.writeText(v);ok=true}catch(e){}}return ok}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act="cidbgo"]');if(!t)return;const i=document.getElementById('cdn');const v=(i&&i.value||'').replace(/\s+/g,'').toUpperCase();
+ if(!v){toast('আগে পাসপোর্ট নম্বর লিখুন');if(i)i.focus();return}
+ if(!/^[A-Z0-9]{5,15}$/.test(v)){toast('নম্বরে শুধু ইংরেজি অক্ষর আর সংখ্যা থাকবে');i.focus();return}
+ if(cpTxt(v))toast('নম্বর কপি হয়েছে: '+v);
+ window.open(t.dataset.url==='med'?MED_URL:CIDB_URL,'_blank','noopener')});
+function hubPush(){try{history.pushState({s:1},'')}catch(e){}}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act="hubkhata"],[data-act="hubprobash"],[data-act="hubcidb"],[data-act="hubmed"],[data-act="tohub"],[data-act="toprobash"]');if(!t)return;const a=t.dataset.act;
+ if(a==='tohub'||a==='toprobash'){if(history.state&&history.state.s){history.back();return}HUB=a==='toprobash'?'probash':true;render();scrollTo(0,0);return}
+ hubPush();if(a==='hubkhata'){HUB=false;go('home')}else{HUB=a==='hubcidb'?'cidb':a==='hubmed'?'med':'probash';render();scrollTo(0,0)}});
+addEventListener('popstate',()=>{if(HUB!==true&&EMAIL){HUB=(HUB==='cidb'||HUB==='med')?'probash':true;render();scrollTo(0,0)}});
+const FB={apiKey:"AIzaSyDWtZO-zLbZWfzW7px21Y1x3x8b59qfNJU",authDomain:"bakir-khata-93a0b.firebaseapp.com",projectId:"bakir-khata-93a0b",storageBucket:"bakir-khata-93a0b.firebasestorage.app",messagingSenderId:"27725866681",appId:"1:27725866681:web:f90c49082cb5d5bad31d68"};
+let EMAIL="";
+function showLogin(msg){
+ $('#nav').style.display='none';setSt('');
+ $('#app').innerHTML=`<div class="card" style="text-align:center;padding:28px 18px"><h2 style="margin-top:0">স্বাগতম!</h2><p class="mut">আপনার হিসাব নিরাপদে রাখতে জিমেইল দিয়ে লগইন করুন। প্রত্যেকের খাতা আলাদা থাকে, অন্য কেউ দেখতে পারে না।</p><div style="margin-top:18px"><button class="btn get" id="gl">জিমেইল দিয়ে লগইন করুন</button></div>${msg?`<p class="red" style="margin-top:12px;font-size:15px">${esc(msg)}</p>`:''}${installHelp()}<p style="margin-top:16px;font-size:13.5px" class="mut">লগইন করলে আপনি আমাদের <a href="privacy.html" target="_blank" rel="noopener" style="color:var(--br2);font-weight:600">গোপনীয়তা নীতি</a> মেনে নিচ্ছেন।</p></div>`;
+ if(inApp()){const g=$('#gl');if(g){g.outerHTML=inAppBox()}return}
+ $('#gl').onclick=async()=>{const p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});
+  try{await firebase.auth().signInWithPopup(p)}catch(e){
+   if(e&&/popup-blocked|operation-not-supported/.test(e.code||''))firebase.auth().signInWithRedirect(p);
+   else if(!(e&&/popup-closed|cancelled-popup/.test(e.code||'')))showLogin('লগইন হয়নি: '+((e&&e.code)||e));}};
+}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act="logout"]');if(!t)return;
+ if(!confirmOut){confirmOut=true;t.textContent='নিশ্চিত? আবার চাপুন';setTimeout(()=>{confirmOut=false},4000);return}
+ firebase.auth().signOut();});
+let confirmOut=false;
+async function startSync(){
+ try{
+  const snap=await colRef().get();
+  const cp=o=>o?JSON.parse(JSON.stringify(o)):o;
+  const sd=snap.docs.find(d=>d.id==='stock'),sdata=cp(sd&&sd.data());
+  const docs=snap.docs.map(d=>cp(d.data())).filter(d=>d&&d.client);
+  if(docs.length||sdata){const L=S,pend=[...dirty];S={clients:docs.map(d=>d.client),tx:docs.flatMap(d=>d.tx||[]),products:(sdata&&sdata.products)||[],stockIn:(sdata&&sdata.stockIn)||[],settings:(sdata&&sdata.settings)||{},cash:(sdata&&sdata.cash)||[]};if(pend.includes('stock')){S.products=L.products;S.stockIn=L.stockIn;S.settings=L.settings||{};S.cash=L.cash||[]}pend.filter(x=>x!=='stock').forEach(cid=>{const c=L.clients.find(x=>x.id===cid);if(!c)return;S.clients=S.clients.filter(x=>x.id!==cid).concat([c]);S.tx=S.tx.filter(t=>t.cid!==cid).concat(L.tx.filter(t=>t.cid===cid))});saveLocal();if(!showForm)render();if(pend.length)flush();else setSt("ক্লাউডে সংরক্ষিত")}
+  else if(S.clients.length||S.products.length||(S.cash||[]).length){dirty.add('stock');setSt("ফোনের তথ্য ক্লাউডে তোলা হচ্ছে...");S.clients.forEach(c=>dirty.add(c.id));flush()}
+  else setSt("নিরাপদে সংরক্ষিত");
+ }catch(e){setSt("ফোনে সংরক্ষিত। ক্লাউডে সংযোগ হয়নি ("+((e&&e.code)||'?')+")।",1)}
+}
+var SUB=null;
+var OWNER='hmforhad747@gmail.com',TRIAL_DAYS=30;
+async function ensureSub(u){try{const r=dbc.collection('subs').doc(u.uid);const d=await r.get();
+ if(d.exists){SUB=d.data()}else{const exp=new Date(Date.now()+TRIAL_DAYS*864e5);let tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
+ const data={email:u.email||'',name:u.displayName||'',tz,lang:navigator.language||'',plan:'trial',start:firebase.firestore.FieldValue.serverTimestamp(),expiry:firebase.firestore.Timestamp.fromDate(exp)};
+ await r.set(data);SUB={...data,start:null}}
+ if(tab==='report'||subBanner())render()}catch(e){console.warn('sub',e)}}
+function isOwner(){return (EMAIL||'').toLowerCase()===OWNER}
+function subExp(){if(!SUB||!SUB.expiry)return null;return SUB.expiry.toDate?SUB.expiry.toDate():new Date(SUB.expiry)}
+function daysLeft(){const d=subExp();return d?Math.ceil((d-Date.now())/864e5):null}
+function subDate(){return subExp().toLocaleDateString('bn-BD',{day:'numeric',month:'long',year:'numeric'})}
+function isExpired(){return !isOwner()&&subExp()!==null&&subExp()<=new Date()}
+function subTxt(){if(isOwner())return `<p class="mut" style="font-size:15px;margin-top:6px">অ্যাকাউন্টের ধরন: <b>মালিক</b> (মেয়াদের কোনো সীমা নেই)</p>`;
+ if(!subExp())return '';const left=daysLeft();
+ return `<p class="mut" style="font-size:15px;margin-top:6px">${SUB.plan==='trial'?'ফ্রি ট্রায়াল':'সাবস্ক্রিপশন'} চলবে: <b>${subDate()}</b> পর্যন্ত (${left>0?n(left)+' দিন বাকি':'মেয়াদ শেষ'})</p>`}
+function subBanner(){if(isOwner()||!subExp())return '';const left=daysLeft(),nm=SUB.plan==='trial'?'ফ্রি ট্রায়াল':'সাবস্ক্রিপশন';
+ if(isExpired())return `<div class="card subw" style="border-left:5px solid var(--red);background:var(--rb);margin:0 0 12px;padding:14px 16px"><b style="color:var(--red);font-size:18px">⛔ আপনার ${nm}ের মেয়াদ শেষ হয়েছে</b><p style="font-size:15px;margin-top:4px">পুরনো সব হিসাব দেখতে পারবেন, কিন্তু নতুন কিছু লেখা বা বদলানো যাবে না। আবার চালু করতে পেমেন্ট করুন।</p>${payBtn()}</div>`;
+ if(left<=5)return `<div class="card subw" style="border-left:5px solid #C98A00;background:#FFF6E0;margin:0 0 12px;padding:14px 16px"><b style="color:#8A5A00;font-size:17px">⏰ আর ${n(left)} দিন পরে ${nm} শেষ হবে</b><p style="font-size:15px;margin-top:4px;color:#5A4300">${subDate()}-এর মধ্যে পেমেন্ট নিশ্চিত করুন, নাহলে নতুন এন্ট্রি বন্ধ হয়ে যাবে।</p>${payBtn()}</div>`;
+ return ''}
+var PAY=null,PQR=null;
+async function loadPay(){try{const d=await dbc.collection('config').doc('pay').get();PAY=d.exists?d.data():null;helpUpd();if(tab==='report'||cur==='__pay')render()}catch(e){console.warn('pay',e)}}
+function payBtn(){return isOwner()?'':`<button class="btn get" data-act="pay" style="margin-top:10px">💳 পেমেন্ট করুন</button>`}
+function vPay(){let h=`<button class="link" data-tab="report">ফিরে যান</button><div class="head"><h1>💳 পেমেন্ট করুন</h1></div>`;
+ if(!PAY||!(PAY.no||PAY.qr))return h+`<p class="empty">পেমেন্টের তথ্য এখনো দেওয়া হয়নি। একটু পরে আবার দেখুন।</p>`;
+ const fee=PAY.fee||10,wa=(PAY.wa||'').replace(/\D/g,'');
+ h+=`<section class="hero" style="border-left-color:var(--grn);text-align:center"><p class="lab">মাসিক ফি</p><p class="big" style="color:var(--grn)">RM ${n(fee)}</p><p class="sub">${subExp()&&!isOwner()?'আপনার মেয়াদ: '+subDate()+' পর্যন্ত':''}</p></section>`;
+ if(PAY.qr)h+=`<div class="card" style="text-align:center;padding:16px"><b style="font-size:18px">QR স্ক্যান করে পাঠান</b><div style="background:#fff;border-radius:14px;padding:10px;margin:12px auto 6px;max-width:280px"><img src="${PAY.qr}" alt="DuitNow QR" style="width:100%;display:block"></div><p class="mut" style="font-size:14px">যেকোনো ব্যাংক অ্যাপ, Touch 'n Go বা অন্য ই-ওয়ালেট দিয়ে স্ক্যান করা যাবে</p></div>`;
+ if(PAY.no)h+=`<div class="card"><b style="font-size:18px">অথবা অ্যাকাউন্টে পাঠান</b>${PAY.bank?`<div class="stat"><span>ব্যাংক</span><b>${esc(PAY.bank)}</b></div>`:''}${PAY.name?`<div class="stat"><span>অ্যাকাউন্টের নাম</span><b>${esc(PAY.name)}</b></div>`:''}<div class="stat"><span>অ্যাকাউন্ট নম্বর</span><b>${esc(PAY.no)}</b></div><div style="margin:4px 0 12px"><button class="btn ghost" data-act="copyno">📋 নম্বর কপি করুন</button></div></div>`;
+ h+=`<h2>টাকা পাঠানোর পরে</h2><div class="card" style="margin-top:0;padding:14px 16px"><p style="font-size:15px">১. টাকা পাঠিয়ে রিসিটের স্ক্রিনশট নিন।<br>২. নিচের বোতাম চেপে হোয়াটসঅ্যাপে মেসেজ পাঠান, সাথে স্ক্রিনশটটা দিন।<br>৩. নিশ্চিত হওয়ার পরে আপনার মেয়াদ বাড়িয়ে দেওয়া হবে।</p>`;
+ if(wa){const m=`আসসালামু আলাইকুম, আমি গণনা খাতার মাসিক ফি RM ${fee} পাঠিয়েছি। আমার Gmail: ${EMAIL}। রিসিটের স্ক্রিনশট দিচ্ছি।`;h+=`<div style="margin-top:12px"><a class="btn get" target="_blank" rel="noopener" href="https://wa.me/${wa}?text=${encodeURIComponent(m)}">✅ টাকা পাঠিয়েছি, রিসিট পাঠান</a></div>`}
+ return h+`</div>`}
+function payOwnerCard(){if(!isOwner())return '';const P=PAY||{},q=PQR||P.qr;
+ return `<h2>সাবস্ক্রিপশন</h2><button class="btn" data-act="owner" style="margin-top:0">👑 মালিক-পাতা খুলুন</button><h2>পেমেন্ট তথ্য (কাস্টমারদের জন্য)</h2><div class="card" style="margin-top:0;padding:10px 16px 16px"><p class="mut" style="font-size:15px">এই ঘর শুধু আপনি দেখবেন। এখানে যা লিখবেন, কাস্টমার পেমেন্ট পাতায় সেটা দেখবে।</p><label for="pfee">মাসিক ফি (RM)</label><input id="pfee" inputmode="decimal" value="${esc(String(P.fee||10))}"><label for="pbank">ব্যাংক বা ই-ওয়ালেটের নাম</label><input id="pbank" autocomplete="off" placeholder="যেমন: Maybank" value="${esc(P.bank||'')}"><label for="pname">অ্যাকাউন্টের নাম</label><input id="pname" autocomplete="off" value="${esc(P.name||'')}"><label for="pno">অ্যাকাউন্ট নম্বর</label><input id="pno" inputmode="numeric" autocomplete="off" value="${esc(P.no||'')}"><label for="pwa">রিসিট পাঠানোর হোয়াটসঅ্যাপ নম্বর (দেশের কোড সহ)</label><input id="pwa" inputmode="tel" autocomplete="off" placeholder="60123456789" value="${esc(P.wa||'')}"><label for="pqr">DuitNow QR-এর ছবি (স্ক্রিনশট বেছে নিন)</label><input id="pqr" type="file" accept="image/*"><div id="pqrv" style="margin-top:8px">${q?`<img src="${q}" alt="" style="max-width:160px;border-radius:10px;background:#fff;padding:6px">`:''}</div><div style="margin-top:14px"><button class="btn" data-act="savepay">পেমেন্ট তথ্য সংরক্ষণ করুন</button></div><div style="margin-top:10px"><button class="btn ghost" data-act="viewpay">👀 কাস্টমার যেমন দেখবে</button></div></div>`}
+function shrinkImg(file){return new Promise((ok,bad)=>{const r=new FileReader();r.onerror=bad;r.onload=()=>{const im=new Image();im.onerror=bad;im.onload=()=>{const M=600,k=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',0.9))};im.src=r.result};r.readAsDataURL(file)})}
+document.addEventListener('change',async e=>{if(e.target.id!=='pqr'||!e.target.files[0])return;try{PQR=await shrinkImg(e.target.files[0]);const v=$('#pqrv');if(v)v.innerHTML=`<img src="${PQR}" alt="" style="max-width:160px;border-radius:10px;background:#fff;padding:6px"><p class="mut" style="font-size:14px">নতুন ছবি বেছে নেওয়া হয়েছে। সংরক্ষণ চাপুন।</p>`}catch(x){toast('ছবিটা খোলা গেল না, আরেকটা চেষ্টা করুন')}});
+document.addEventListener('click',async e=>{const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+ if(a==='pay'||a==='viewpay'){go('report','__pay');if(!PAY&&dbc)loadPay()}
+ else if(a==='copyno'){try{await navigator.clipboard.writeText(PAY.no);toast('নম্বর কপি হয়েছে')}catch(x){toast('কপি হয়নি, নম্বরটা হাতে লিখে নিন')}}
+ else if(a==='savepay'){if(!isOwner()||!dbc)return;const d={fee:num($('#pfee').value)||10,bank:$('#pbank').value.trim(),name:$('#pname').value.trim(),no:$('#pno').value.trim(),wa:$('#pwa').value.replace(/\D/g,''),qr:PQR||(PAY&&PAY.qr)||''};
+  if(!d.no&&!d.qr){toast('অন্তত অ্যাকাউন্ট নম্বর বা QR-এর ছবি দিন');return}if(!d.wa){toast('হোয়াটসঅ্যাপ নম্বর লিখুন');$('#pwa').focus();return}
+  t.disabled=true;t.textContent='সংরক্ষণ হচ্ছে...';try{await dbc.collection('config').doc('pay').set(d);PAY=d;PQR=null;render();toast('পেমেন্ট তথ্য সংরক্ষিত হয়েছে')}catch(x){t.disabled=false;t.textContent='পেমেন্ট তথ্য সংরক্ষণ করুন';toast('সংরক্ষণ হয়নি ('+((x&&x.code)||'?')+')')}}
+});
+var OWN={list:null,f:'all',q:'',busy:false};
+const TZN={'Asia/Kuala_Lumpur':'মালয়েশিয়া','Asia/Kuching':'মালয়েশিয়া','Asia/Dhaka':'বাংলাদেশ','Asia/Singapore':'সিঙ্গাপুর','Asia/Kolkata':'ভারত','Asia/Calcutta':'ভারত','Asia/Kathmandu':'নেপাল','Asia/Dubai':'আমিরাত','Asia/Riyadh':'সৌদি আরব','Asia/Qatar':'কাতার','Asia/Kuwait':'কুয়েত','Asia/Muscat':'ওমান','Asia/Bahrain':'বাহরাইন','Asia/Jakarta':'ইন্দোনেশিয়া','Europe/London':'যুক্তরাজ্য'};
+const tsD=x=>x?(x.toDate?x.toDate():new Date(x)):null;
+const bnD=d=>d?d.toLocaleDateString('bn-BD',{day:'numeric',month:'short',year:'numeric'}):'—';
+async function loadOwn(){if(!dbc)return;OWN.busy=true;try{const q=await dbc.collection('subs').get();let pm={};try{const pq=await dbc.collection('profiles').get();pq.docs.forEach(d=>pm[d.id]=d.data())}catch(x){}OWN.list=q.docs.map(d=>({id:d.id,...d.data(),pf:pm[d.id]||null}))}catch(e){OWN.list=[];toast('তালিকা আনা গেল না ('+((e&&e.code)||'?')+')')}OWN.busy=false;if(cur==='__own')render()}
+function ownRow(r){const ex=tsD(r.expiry),left=ex?Math.ceil((ex-Date.now())/864e5):null,own=(r.email||'').toLowerCase()===OWNER;
+ const st=own?['মালিক','reg']:left===null?['তারিখ নেই','occ']:left<=0?['মেয়াদ শেষ','bad']:left<=5?[n(left)+' দিন বাকি','occ']:[(r.plan==='paid'?'পেইড':'ট্রায়াল')+' · '+n(left)+' দিন','reg'];
+ const tag=st[1]==='bad'?'style="background:var(--rb);color:var(--red)"':'';
+ return `<li style="padding:12px 14px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div style="min-width:0"><b style="font-size:17px;word-break:break-all">${esc(r.email||'?')}</b><small style="display:block;color:var(--mut);font-size:14px">${r.name?esc(r.name)+' · ':''}${esc(TZN[r.tz]||r.tz||'')}${r.start?' · যোগ: '+bnD(tsD(r.start)):''}</small><small style="display:block;font-size:14px;margin-top:2px">মেয়াদ: <b>${own?'সীমা নেই':bnD(ex)}</b></small>${r.pf?`<small style="display:block;font-size:14px;margin-top:2px">📱 +${esc(r.pf.code)} ${esc(r.pf.local)}${r.pf.biz?' · 🏪 '+esc(r.pf.biz):''}</small>`:`<small style="display:block;font-size:13px;margin-top:2px;color:var(--mut)">📱 নম্বর দেয়নি</small>`}</div><span class="tag ${st[1]==='bad'?'':st[1]}" ${tag} style="flex:none;margin:0">${st[0]}</span></div>${own?'':`<div style="display:flex;gap:8px;margin-top:10px"><button class="btn get" style="min-height:44px;padding:6px 10px;font-size:16px" data-act="ext" data-id="${r.id}" data-m="1">+১ মাস</button><button class="btn ghost" style="min-height:44px;padding:6px 10px;font-size:16px" data-act="ext" data-id="${r.id}" data-m="3">+৩ মাস</button>${r.pf&&r.pf.phone?`<a class="btn ghost" style="min-height:44px;padding:6px 10px;font-size:16px;flex:none;width:auto" target="_blank" rel="noopener" href="https://wa.me/${esc(r.pf.phone)}?text=${encodeURIComponent('আসসালামু আলাইকুম '+(r.pf.name||'')+', গণনা খাতা অ্যাপ সম্পর্কে যোগাযোগ করছি।')}" aria-label="হোয়াটসঅ্যাপ">💬</a>`:''}</div>`}</li>`}
+function vOwner(){let h=`<button class="link" data-tab="report">ফিরে যান</button><div class="head"><h1>👑 মালিক-পাতা</h1><button class="link" data-act="ownref">রিফ্রেশ</button></div>`;
+ if(!isOwner())return h+`<p class="empty">এই পাতা শুধু মালিকের জন্য।</p>`;
+ if(!OWN.list)return h+`<p class="empty">তালিকা আসছে...</p>`;
+ const L=OWN.list.filter(r=>(r.email||'').toLowerCase()!==OWNER).map(r=>{const ex=tsD(r.expiry);return {r,left:ex?Math.ceil((ex-Date.now())/864e5):null}});
+ const act=L.filter(x=>x.left>0).length,soon=L.filter(x=>x.left>0&&x.left<=5).length,gone=L.filter(x=>x.left!==null&&x.left<=0).length,paid=L.filter(x=>x.left>0&&x.r.plan==='paid').length;
+ h+=`<div class="card" style="padding:6px 16px"><div class="stat"><span>মোট কাস্টমার</span><b>${n(L.length)}</b></div><div class="stat"><span>চালু আছে<small>এর মধ্যে পেইড ${n(paid)} জন</small></span><b class="grn">${n(act)}</b></div><div class="stat"><span>৫ দিনের মধ্যে শেষ হবে</span><b style="color:#B07400">${n(soon)}</b></div><div class="stat"><span>মেয়াদ শেষ</span><b class="red">${n(gone)}</b></div></div>`;
+ const F={all:'সবাই',soon:'শেষ হবে',gone:'মেয়াদ শেষ'};
+ h+=`<div class="chips">${Object.keys(F).map(k=>`<button class="${OWN.f===k?'on':''}" data-act="ownf" data-f="${k}">${F[k]}</button>`).join('')}</div><label for="oq">Gmail বা নাম দিয়ে খুঁজুন</label><input id="oq" autocomplete="off" value="${esc(OWN.q)}">`;
+ const k=OWN.q.trim().toLowerCase();
+ const rows=L.filter(x=>(OWN.f==='all'||(OWN.f==='soon'&&x.left>0&&x.left<=5)||(OWN.f==='gone'&&x.left!==null&&x.left<=0))&&(!k||(x.r.email||'').toLowerCase().includes(k)||(x.r.name||'').toLowerCase().includes(k)||((x.r.pf||{}).phone||'').includes(k)||((x.r.pf||{}).biz||'').toLowerCase().includes(k))).sort((a,b)=>(a.left??1e9)-(b.left??1e9));
+ return h+`<div id="olist">${rows.length?`<ul class="list" style="margin-top:12px">${rows.map(x=>ownRow(x.r)).join('')}</ul>`:`<p class="empty">${L.length?'এখানে কেউ নেই।':'এখনো কোনো কাস্টমার লগইন করেনি।'}</p>`}</div>`}
+document.addEventListener('input',e=>{if(e.target.id!=='oq')return;OWN.q=e.target.value;const d=document.createElement('div');d.innerHTML=vOwner();const n2=d.querySelector('#olist'),o=$('#olist');if(n2&&o)o.innerHTML=n2.innerHTML});
+document.addEventListener('click',async e=>{const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+ if(a==='owner'){go('report','__own');loadOwn()}
+ else if(a==='ownref'){OWN.list=null;render();loadOwn()}
+ else if(a==='ownf'){OWN.f=t.dataset.f;render()}
+ else if(a==='ext'){if(!isOwner()||!dbc)return;const r=(OWN.list||[]).find(x=>x.id===t.dataset.id);if(!r)return;const m=+t.dataset.m||1;
+  const base=Math.max(Date.now(),(tsD(r.expiry)||new Date()).getTime()),nx=new Date(base+m*30*864e5);
+  if(!confirm(`${r.email}\nমেয়াদ ${m} মাস বাড়বে।\nনতুন শেষ তারিখ: ${bnD(nx)}\n\nনিশ্চিত?`))return;
+  t.disabled=true;try{const up={expiry:firebase.firestore.Timestamp.fromDate(nx),plan:'paid',paidAt:firebase.firestore.FieldValue.serverTimestamp()};await dbc.collection('subs').doc(r.id).update(up);r.expiry=up.expiry;r.plan='paid';render();toast('মেয়াদ বাড়ানো হয়েছে: '+bnD(nx)+' পর্যন্ত')}catch(x){t.disabled=false;toast('হয়নি ('+((x&&x.code)||'?')+')')}}
+});
+var HP='day';
+function homeToday(){const td=today(),mo=td.slice(0,7),inP=d=>HP==='day'?d===td:String(d).slice(0,7)===mo;
+ const gv=S.tx.filter(t=>t.type==='give'&&!isOld(t)&&inP(t.date)),cs=cashSum(x=>inP(x.date));
+ const due=gv.reduce((a,t)=>a+t.amt,0),col=S.tx.filter(t=>t.type==='get'&&inP(t.date)).reduce((a,t)=>a+t.amt,0);
+ const lp=gv.reduce((s,t)=>s+(t.lines||[]).reduce((a,l)=>{const v=(l.pr-l.cost)*l.q;return a+(Number.isFinite(v)?v:0)},0),0)+(Number.isFinite(cs.p)?cs.p:0);
+ const T=(c,ic,l,v)=>`<div class="t ${c}"><p>${ic} ${l}</p><strong>${fmt(v)}</strong></div>`;
+ return `<section class="today"><div class="th"><b>${HP==='day'?'আজকের হিসাব':'এই মাসের হিসাব'}</b><div class="sw"><button class="${HP==='day'?'on':''}" data-act="hp" data-p="day">আজ</button><button class="${HP==='month'?'on':''}" data-act="hp" data-p="month">এই মাস</button></div></div><div class="g">${T('t1','🛒','মোট বিক্রি',due+cs.s)}${T('t2','✅','টাকা আদায়',col)}${T('t3','📈','লাভ',lp)}${T('t4','📝','বাকিতে দেওয়া',due)}</div></section>`}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act="hp"]');if(!t)return;HP=t.dataset.p;render()});
+document.addEventListener('input',e=>{const c=e.target.classList;if(!c.contains('sq')&&!c.contains('sp'))return;const li=e.target.closest('.it');if(!li)return;const q=num((li.querySelector('.sq')||{}).value||'')||0,p=num((li.querySelector('.sp')||{}).value||'')||0,o=li.querySelector('[data-lt]');if(o)o.textContent=q*p?fmt(q*p):'—'});
+var PROF=null,PROFU=null,PROFSHOW=false;
+const CC=[['MY','🇲🇾','মালয়েশিয়া','60'],['BD','🇧🇩','বাংলাদেশ','880'],['SG','🇸🇬','সিঙ্গাপুর','65'],['IN','🇮🇳','ভারত','91'],['NP','🇳🇵','নেপাল','977'],['ID','🇮🇩','ইন্দোনেশিয়া','62'],['TH','🇹🇭','থাইল্যান্ড','66'],['PK','🇵🇰','পাকিস্তান','92'],['LK','🇱🇰','শ্রীলঙ্কা','94'],['MM','🇲🇲','মিয়ানমার','95'],['PH','🇵🇭','ফিলিপাইন','63'],['AE','🇦🇪','আমিরাত','971'],['SA','🇸🇦','সৌদি আরব','966'],['QA','🇶🇦','কাতার','974'],['KW','🇰🇼','কুয়েত','965'],['OM','🇴🇲','ওমান','968'],['BH','🇧🇭','বাহরাইন','973'],['GB','🇬🇧','যুক্তরাজ্য','44'],['US','🇺🇸','আমেরিকা','1']];
+function ccGuess(){let tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}const M={'Asia/Kuala_Lumpur':'MY','Asia/Kuching':'MY','Asia/Dhaka':'BD','Asia/Singapore':'SG','Asia/Kolkata':'IN','Asia/Calcutta':'IN','Asia/Kathmandu':'NP','Asia/Jakarta':'ID','Asia/Bangkok':'TH','Asia/Karachi':'PK','Asia/Colombo':'LK','Asia/Yangon':'MM','Asia/Manila':'PH','Asia/Dubai':'AE','Asia/Riyadh':'SA','Asia/Qatar':'QA','Asia/Kuwait':'KW','Asia/Muscat':'OM','Asia/Bahrain':'BH','Europe/London':'GB'};return M[tz]||'MY'}
+const skipKey=()=>'bk-regskip-'+(uid0||'');
+async function loadProf(u){PROFU=u;const cb=curSym();try{const d=await dbc.collection('profiles').doc(u.uid).get();PROF=d.exists?d.data():null;try{if(HUB===true)render()}catch(x){}}catch(e){PROF=null;return}
+ if(curSym()!==cb){try{render()}catch(x){}}
+ let sk=false;try{sk=!!localStorage.getItem(skipKey())}catch(e){}
+ if(!PROF&&!sk)openReg()}
+function regForm(){const P=PROF||{},cc=P.cc||ccGuess(),u=PROFU||{};
+ return `<div class="rg-c"><div class="rg-top"><img src="icon-192.png" width="56" height="56" alt=""><div><b>স্বাগতম!</b><p>আপনার তথ্য দিয়ে রেজিস্ট্রেশন করুন</p></div></div>
+ <label for="rgn">আপনার নাম</label><input id="rgn" autocomplete="name" value="${esc(P.name||u.displayName||'')}">
+ <label for="rgb">ব্যবসার / দোকানের নাম</label><input id="rgb" autocomplete="organization" placeholder="যেমন: Forhad Telecom" value="${esc(P.biz||(S.settings||{}).name||'')}">
+ <label for="rgc">দেশ</label><select id="rgc">${CC.map(c=>`<option value="${c[0]}"${c[0]===cc?' selected':''}>${c[1]} ${c[2]} (+${c[3]})</option>`).join('')}</select>
+ <label for="rgp">মোবাইল / হোয়াটসঅ্যাপ নম্বর</label><div class="rg-ph"><span id="rgcc">+${(CC.find(c=>c[0]===cc)||CC[0])[3]}</span><input id="rgp" inputmode="tel" autocomplete="tel-national" placeholder="123456789" value="${esc(P.local||'')}"></div>
+ <p class="rg-n">🔒 আপনার তথ্য সম্পূর্ণ নিরাপদ ও গোপন থাকবে।</p>
+ <div style="margin-top:14px"><button class="btn" data-act="regsave">রেজিস্ট্রেশন সম্পন্ন করুন</button></div>
+ <div style="margin-top:8px"><button class="btn ghost" data-act="regskip">${PROF?'বন্ধ করুন':'পরে করব'}</button></div></div>`}
+function openReg(){if(PROFSHOW)return;PROFSHOW=true;const d=document.createElement('div');d.id='regbox';d.innerHTML=regForm();document.body.appendChild(d)}
+function closeReg(){const d=$('#regbox');if(d)d.remove();PROFSHOW=false}
+document.addEventListener('change',e=>{if(e.target.id!=='rgc')return;const c=CC.find(x=>x[0]===e.target.value);const o=$('#rgcc');if(c&&o)o.textContent='+'+c[3]});
+document.addEventListener('click',async e=>{const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+ if(a==='regskip'){try{localStorage.setItem(skipKey(),'1')}catch(x){}closeReg()}
+ else if(a==='regopen'){openReg()}
+ else if(a==='regsave'){if(!dbc||!uid0)return;const name=$('#rgn').value.trim(),biz=$('#rgb').value.trim(),cc=$('#rgc').value,c=CC.find(x=>x[0]===cc)||CC[0];
+  let local=$('#rgp').value.replace(/[০-৯]/g,d=>'০১২৩৪৫৬৭৮৯'.indexOf(d)).replace(/\D/g,'');if(local.startsWith(c[3])&&local.length>c[3].length+6)local=local.slice(c[3].length);local=local.replace(/^0+/,'');
+  if(!name){toast('আপনার নাম লিখুন');$('#rgn').focus();return}
+  if(local.length<6||local.length>12){toast('সঠিক মোবাইল নম্বর লিখুন');$('#rgp').focus();return}
+  const d={name,biz,cc,country:c[2],code:c[3],local,phone:c[3]+local,email:EMAIL,at:firebase.firestore.FieldValue.serverTimestamp()};
+  t.disabled=true;t.textContent='সংরক্ষণ হচ্ছে...';
+  try{await dbc.collection('profiles').doc(uid0).set(d);PROF={...d,at:null};try{if(HUB===true)render()}catch(x){}
+   const B=S.settings=S.settings||{};let ch=false;if(biz&&!B.name){B.name=biz;ch=true}if(!B.phone){B.phone=d.phone;ch=true}if(ch){try{save(['stock'])}catch(x){}}
+   closeReg();render();toast('রেজিস্ট্রেশন সম্পন্ন হয়েছে। ধন্যবাদ!')}
+  catch(x){t.disabled=false;t.textContent='রেজিস্ট্রেশন সম্পন্ন করুন';toast('সংরক্ষণ হয়নি ('+((x&&x.code)||'?')+')')}}
+});
+function profCard(){const P=PROF;return `<h2>আমার প্রোফাইল</h2><div class="card" style="margin-top:0;padding:12px 16px">${P?`<div class="stat"><span>নাম</span><b>${esc(P.name)}</b></div>${P.biz?`<div class="stat"><span>ব্যবসা</span><b>${esc(P.biz)}</b></div>`:''}<div class="stat"><span>নম্বর</span><b>+${esc(P.code)} ${esc(P.local)}</b></div>`:`<p class="mut" style="font-size:15px;padding:6px 0">এখনো রেজিস্ট্রেশন করা হয়নি।</p>`}<div style="margin:8px 0 4px"><button class="btn ghost" data-act="regopen">${P?'✏️ তথ্য বদলান':'📝 রেজিস্ট্রেশন করুন'}</button></div></div>`}
+function helpWa(){const w=((PAY||{}).wa||'').replace(/\D/g,'');return w||''}
+function helpUpd(){const b=document.getElementById('helpb');if(b)b.style.display=(EMAIL&&!isOwner()&&helpWa())?'flex':'none'}
+function helpMsg(){return 'আসসালামু আলাইকুম, গণনা খাতা অ্যাপ নিয়ে আমার একটু সাহায্য দরকার।\nআমার Gmail: '+EMAIL}
+function helpCard(){if(isOwner()||!helpWa())return '';return `<h2>সাহায্য ও যোগাযোগ</h2><div class="card hc" style="margin-top:0"><div class="hc-i">🎧</div><div style="flex:1;min-width:0"><b>কোনো সমস্যা বা প্রশ্ন?</b><p class="mut">হোয়াটসঅ্যাপে মেসেজ দিন, আমরা সাহায্য করব।</p></div><a class="btn get" style="width:auto;flex:none;min-height:44px;padding:8px 16px" target="_blank" rel="noopener" href="https://wa.me/${helpWa()}?text=${encodeURIComponent(helpMsg())}">💬 মেসেজ</a></div>`}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act="help"]');if(!t)return;const w=helpWa();if(!w){toast('সাহায্যের নম্বর এখনো দেওয়া হয়নি');return}window.open('https://wa.me/'+w+'?text='+encodeURIComponent(helpMsg()),'_blank')});
+document.addEventListener('input',e=>{const id=e.target.id;if(!['bn','bt','bp'].includes(id))return;const v=k=>(($('#'+k)||{}).value||'').trim(),n1=$('#pv-n'),t1=$('#pv-t'),f1=$('#pv-f');if(n1)n1.textContent='🏪 '+(v('bn').toUpperCase()||'—');if(t1)t1.textContent=v('bt');if(f1)f1.textContent=[v('bn'),v('bp')].filter(Boolean).join('  ·  ')});
+async function deleteAccount(){if(!dbc||!uid0)return;const u=firebase.auth().currentUser;if(!u)return;
+ const box=$('#delbox');const st=m=>{const e=$('#delst');if(e)e.textContent=m};
+ try{st('মুছে ফেলা হচ্ছে...');
+  const snap=await colRef().get();for(const d of snap.docs){await d.ref.delete()}
+  try{await dbc.collection('profiles').doc(uid0).delete()}catch(x){}
+  try{localStorage.removeItem(KEY);localStorage.removeItem(skipKey())}catch(x){}
+  S={clients:[],tx:[],products:[],stockIn:[],settings:{},cash:[]};dirty.clear&&dirty.clear();
+  try{await u.delete()}catch(x){}
+  if(box)box.remove();await firebase.auth().signOut().catch(()=>{});
+  showLogin('আপনার অ্যাকাউন্ট আর সব হিসাব মুছে ফেলা হয়েছে।')}
+ catch(e){st('মুছে ফেলা যায়নি ('+((e&&e.code)||'?')+')। ইন্টারনেট দেখে আবার চেষ্টা করুন।');const b=$('#delgo');if(b){b.disabled=false}}}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+ if(a==='delacc'){if(isOwner()){toast('মালিকের অ্যাকাউন্ট এখান থেকে মোছা যাবে না');return}
+  const d=document.createElement('div');d.id='delbox';d.innerHTML=`<div class="dl-c"><div class="dl-i">⚠️</div><h2 style="margin:8px 0 4px;justify-content:center">অ্যাকাউন্ট মুছে ফেলবেন?</h2><p class="mut" style="font-size:15px">এতে আপনার <b>সব ক্লায়েন্ট, লেনদেন, স্টক আর প্রোফাইল</b> চিরদিনের জন্য মুছে যাবে। আর ফেরত আনা যাবে না।</p><p class="mut" style="font-size:14px;margin-top:8px">চাইলে আগে নিচের "ব্যাকআপ কপি করুন" দিয়ে একটা কপি রেখে দিন।</p><label for="delcf" style="text-align:left">নিশ্চিত করতে নিচে <b>DELETE</b> লিখুন</label><input id="delcf" autocomplete="off" autocapitalize="characters"><p id="delst" class="red" style="font-size:14px;margin-top:8px"></p><div class="two" style="margin-top:8px"><button class="btn ghost" data-act="delno">বাতিল</button><button class="btn give" id="delgo" data-act="delyes">মুছে ফেলুন</button></div></div>`;document.body.appendChild(d)}
+ else if(a==='delno'){const d=$('#delbox');if(d)d.remove()}
+ else if(a==='delyes'){if((($('#delcf')||{}).value||'').trim().toUpperCase()!=='DELETE'){const s=$('#delst');if(s)s.textContent='নিশ্চিত করতে DELETE লিখুন';return}t.disabled=true;deleteAccount()}
+});
+function inApp(){const u=navigator.userAgent||'';return /FBAN|FBAV|FB_IAB|Instagram|Messenger|Line\/|MicroMessenger|TikTok|Snapchat|; wv\)|WebView/i.test(u)}
+const isIOS=()=>/iPhone|iPad|iPod/i.test(navigator.userAgent||'');
+const isStandalone=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
+function inAppBox(){const url=location.href.split('#')[0];const host=url.replace(/^https?:\/\//,'');
+ const chrome=isIOS()?'':`<a class="btn get" style="margin-top:12px" href="intent://${host}#Intent;scheme=https;package=com.android.chrome;end">🌐 Chrome-এ খুলুন</a>`;
+ return `<div class="iab"><b>⚠️ এই পাতাটা অন্য অ্যাপের ভেতরে খুলেছে</b><p>এখানে Google লগইন আর ইনস্টল কাজ করে না। দয়া করে ${isIOS()?'Safari':'Chrome'}-এ খুলুন।</p>${chrome}<button class="btn ghost" style="margin-top:10px" data-act="cplink">📋 লিংক কপি করুন</button><p class="iab-s">${isIOS()?'উপরে ডানে ••• বা ↗ চিহ্ন চেপে "Open in Safari" বাছাই করুন।':'না খুললে: উপরে ডানে ⋮ চেপে "Open in Chrome" বা "ব্রাউজারে খুলুন" বাছাই করুন।'}</p></div>`}
+function installHelp(){if(isStandalone()||inApp())return '';
+ return `<details class="ih"><summary>📲 ফোনে অ্যাপ হিসেবে কীভাবে রাখবেন?</summary>${isIOS()?`<ol><li>Safari-তে নিচের <b>Share (↑)</b> বোতাম চাপুন</li><li><b>Add to Home Screen</b> বাছাই করুন</li><li>উপরে <b>Add</b> চাপুন</li></ol>`:`<ol><li>Chrome-এ উপরে ডানে <b>⋮</b> চাপুন</li><li><b>Add to Home screen</b> বা <b>Install app</b> বাছাই করুন</li><li><b>Install</b> চাপুন</li></ol><p class="iab-s">অন্য ব্রাউজারে (Mi, Opera ইত্যাদি) না হলে Chrome দিয়ে খুলুন।</p>`}</details>`}
+document.addEventListener('click',async e=>{const t=e.target.closest('[data-act="cplink"]');if(!t)return;const u=location.href.split('#')[0];try{await navigator.clipboard.writeText(u);toast('লিংক কপি হয়েছে। এবার Chrome খুলে পেস্ট করুন')}catch(x){prompt('লিংকটা কপি করুন:',u)}});
+try{
+ firebase.initializeApp(FB);
+ firebase.auth().getRedirectResult().catch(e=>showLogin('লগইন হয়নি: '+((e&&e.code)||e)));
+ firebase.auth().onAuthStateChanged(u=>{
+  if(!u){dbc=null;uid0=null;EMAIL="";SUB=null;PAY=null;PQR=null;OWN.list=null;PROF=null;closeReg();S={clients:[],tx:[],products:[],stockIn:[],settings:{}};showLogin();return}
+  uid0=u.uid;EMAIL=u.email||"";dbc=firebase.firestore();KEY="bakir-khata-c1-"+u.uid;
+  S={clients:[],tx:[],products:[],stockIn:[],settings:{}};
+  try{const r=localStorage.getItem(KEY);if(r){const p=JSON.parse(r);if(p&&p.clients&&p.tx)S=p}}catch(e){}
+  S.products=S.products||[];S.stockIn=S.stockIn||[];S.settings=S.settings||{};S.cash=S.cash||[];
+  HUB=true;tab='home';cur=null;render();setSt("ক্লাউডের সাথে সংযোগ হচ্ছে...");startSync();ensureSub(u);loadPay();loadProf(u);
+ });
+}catch(e){setSt("অ্যাপ চালু হয়নি। ইন্টারনেট সংযোগ দেখে আবার খুলুন।",1)}
+</script>
+<div id="instbar" style="display:none;position:fixed;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));max-width:536px;margin:0 auto;z-index:9;background:#0F5E59;color:#fff;border-radius:12px;padding:12px 14px;box-shadow:0 6px 20px rgba(0,0,0,.25);align-items:center;gap:12px">
+<img src="icon-192.png" width="44" height="44" alt="" style="border-radius:10px;flex:none">
+<div style="flex:1;font-size:15px;line-height:1.35"><b style="font-size:17px">গণনা খাতা</b><br>ফোনে অ্যাপ হিসেবে রাখুন</div>
+<button id="instbtn" style="flex:none;min-height:44px;padding:8px 14px;border:0;border-radius:8px;background:#E7B53C;color:#1B2227;font:700 16px inherit;font-family:inherit">ইনস্টল</button>
+<button id="instx" aria-label="বন্ধ করুন" style="flex:none;background:none;border:0;color:#fff;font-size:24px;padding:4px 6px">×</button>
+</div>
+<script>
+if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+(function(){let ev=null;const bar=document.getElementById('instbar');
+ addEventListener('beforeinstallprompt',e=>{e.preventDefault();ev=e;bar.style.display='flex'});
+ document.getElementById('instbtn').onclick=async()=>{if(!ev)return;bar.style.display='none';ev.prompt();try{await ev.userChoice}catch(x){}ev=null};
+ document.getElementById('instx').onclick=()=>{bar.style.display='none'};
+ addEventListener('appinstalled',()=>{bar.style.display='none'});
+})();
+</script>
+</body>
+</html>
+
+</body></html>
