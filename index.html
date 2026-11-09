@@ -185,6 +185,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--br2);outline:none;box
 .seg button:not(.on)[data-type="give"]{background:var(--rb);color:var(--red);border-color:transparent}
 .seg button:not(.on)[data-type="get"]{background:var(--gb);color:var(--grn);border-color:transparent}
 .seg button:not(.on){box-shadow:none;font-weight:700}
+.ptseg button.on{background:linear-gradient(135deg,#0F5E59,#0B4743);color:#fff;border-color:transparent;box-shadow:var(--sh)}
+.ptseg button:not(.on){background:var(--sf);color:var(--ink);border:1.5px solid var(--ln2);font-weight:600}
 select{-webkit-appearance:none;appearance:none;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%23178178' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 16px center;border:1.5px solid var(--mint2);font-weight:600;padding-right:44px;color:var(--ink)}
 label:has(> input[type=checkbox]){background:var(--sf)!important;border:1px solid var(--ln2)!important;border-radius:16px!important;box-shadow:var(--sh);padding:14px 16px!important;cursor:pointer}
 label:has(> input[type=checkbox]:checked){background:var(--rb)!important;border-color:var(--red)!important;color:var(--red)}
@@ -984,6 +986,7 @@ var LANG=(function(){try{return localStorage.getItem('bk-lang')||''}catch(e){ret
 [/^মেয়াদ বাড়ানো হয়েছে: (.+) পর্যন্ত$/,'Plan extended until $1'],
 [/^(.+)-এর বাকি এখন (.+)$/,'$1 now owes $2'],
 ];
+  Object.assign(EN,{"কোন বাকি থেকে কাটবে":"Deduct from which due","নতুন বাকি":"New due","নতুন বাকি থেকে কাটা":"Deducted from new due","পুরনো বাকি থেকে কাটা":"Deducted from old due"});
   const BN=/[ঀ-৿]/,PHR=PH.map(([a,b])=>[new RegExp('(^|[^\\u0980-\\u09FF])'+a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?=$|[^\\u0980-\\u09FF])','g'),b]);
   const tr=s=>{const m=/^(\s*)([\s\S]*?)(\s*)$/.exec(s),c=m[2];if(!c||!BN.test(c))return s;let t=EN[c];const CS=(typeof curSym==="function")?curSym():"RM";if(t===undefined&&CS!=="RM"&&c.indexOf(CS)>=0){const k=EN[c.split(CS).join("RM")];if(k!==undefined)t=k.split("RM").join(CS)}
    if(t===undefined){t=c;let hit=false;for(const [re,rp] of RX){if(re.test(t)){t=t.replace(re,rp);hit=true;break}}
@@ -1146,6 +1149,18 @@ function vHome(){
 }
 const ok=x=>(isOld(x)?'0000-00-00':x.date)+x.id;
 const isOld=t=>t&&t.type==='give'&&(t.old||(!(t.lines||[]).length&&/পুর[াা]?[নণ]|পুরাতন|আগের বাক|old due/i.test(t.note||'')));
+/* পুরনো/নতুন বাকি আলাদা: পুরনো এন্ট্রি (pt নেই) সব পুরনো বাকি; নতুন মাল pt:'n'; টাকা pt:'o'|'n' */
+function dueSplit(cid,upto){let o=0,w=0;S.tx.forEach(t=>{if(t.cid!==cid)return;if(upto&&ok(t)>upto)return;const a=+t.amt||0;if(t.type==='give'){if(isOld(t)||t.pt!=='n')o+=a;else w+=a}else{if(t.pt==='n')w-=a;else o-=a}});if(w<0){o+=w;w=0}if(o<0){w+=o;o=0}return {o:Math.round(o*100)/100,n:Math.round(w*100)/100}}
+function ptDef(cid,d){const s=dueSplit(cid);if(s.o<=0.005)return 'n';if(s.n<=0.005)return 'o';return S.tx.some(t=>t.cid===cid&&t.type==='give'&&t.pt==='n'&&!isOld(t)&&t.date===d)?'n':'o'}
+function ptSeg(act,sel){return `<div class="seg ptseg"><button data-act="${act}" data-pt="n" class="${sel==='n'?'on':''}">নতুন বাকি</button><button data-act="${act}" data-pt="o" class="${sel==='o'?'on':''}">পুরনো বাকি</button></div>`}
+function ptUpd(){const w=$('#ptw');if(!w)return;const cid=($('#ac')||{}).value,E=add.editId?S.tx.find(x=>x.id===add.editId):null;
+ if(add.type!=='get'||!cid){w.style.display='none';w.innerHTML='';return}
+ const ed=E&&E.type==='get'&&E.cid===cid,s=dueSplit(cid);let sel;
+ if(ed)sel=add.ptMan?add.pt:(E.pt||'o');
+ else{if(s.o<=0.005){w.style.display='none';w.innerHTML='';add.pt='n';return}sel=add.ptMan?add.pt:ptDef(cid,($('#ad')||{}).value||today())}
+ add.pt=sel;w.style.display='block';
+ w.innerHTML=`<label>কোন বাকি থেকে কাটবে</label>${ptSeg('setpt',sel)}${ed?'':`<p class="mut" style="font-size:14px;margin-top:6px"><span>পুরনো বাকি</span> ${fmt(s.o)} · <span>নতুন বাকি</span> ${fmt(s.n)}</p>`}`}
+let QPT=null;
 const CATS={reg:'নিয়মিত',occ:'মাঝে মাঝে',pro:'সম্ভাব্য'};
 const catOf=c=>CATS[c.cat]?c.cat:'reg';
 let cat='all',bc='all',sent=new Set();
@@ -1263,9 +1278,10 @@ function billText(tid,lang){
   m+=W("আপনার কাছ থেকে *"+f(t.amt)+"* বুঝে পেয়েছি। ধন্যবাদ।","Received *"+f(t.amt)+"* from you. Thank you.")+"\n"+line+"\n";
   m+=W("আগের বাকি:","Previous due:")+"  "+f(Math.max(prev,0))+"\n";
   m+=W("এবার জমা:","Paid now:")+"  − "+f(t.amt)+"\n";
+  if(t.pt)m+=(t.pt==='n'?W("কাটা হলো: নতুন বাকি থেকে","Applied to: new due"):W("কাটা হলো: পুরনো বাকি থেকে","Applied to: old due"))+"\n";
  }
  m+=line+"\n";
- if(after>0.005)m+="💰 *"+W("মোট বাকি:","Total due:")+"  "+f(after)+"*\n";
+ if(after>0.005){m+="💰 *"+W("মোট বাকি:","Total due:")+"  "+f(after)+"*\n";const bs=dueSplit(t.cid,ok(t));if(bs.o>0.005&&bs.n>0.005)m+="   "+W("পুরনো:","Old:")+"  "+f(bs.o)+"\n   "+W("নতুন:","New:")+"  "+f(bs.n)+"\n"}
  else if(after<-0.005)m+="💚 *"+W("আপনার অগ্রিম জমা:","Advance balance:")+"  "+f(-after)+"*\n";
  else m+=W("🎉 *আপনার কোনো বাকি নেই।*\n","🎉 *No balance due. Thank you!*\n");
  if(B.pay&&after>0.005){m+="\n💳 *"+W("পেমেন্ট","Payment")+"*\n";B.pay.trim().split(/\s*[\/\n|·]+\s*/).filter(Boolean).forEach(x=>{m+="> "+(/^[0-9 \-]{6,}$/.test(x)?"`"+x+"`":x)+"\n"})}
@@ -1298,25 +1314,27 @@ function vClient(){
  if(waNum(c)){const T=[['নতুন মাল','আসসালামু আলাইকুম '+c.name+', নতুন মাল এসেছে। কিছু লাগলে জানাবেন। ধন্যবাদ।'],['অফার','আসসালামু আলাইকুম '+c.name+', এই সপ্তাহে বিশেষ অফার চলছে। বিস্তারিত জানতে মেসেজ দিন।'],['খোঁজ নেওয়া','আসসালামু আলাইকুম '+c.name+', কেমন আছেন? অনেক দিন কথা হয় না। কোনো মাল লাগলে জানাবেন।'],['ধন্যবাদ','ধন্যবাদ '+c.name+', আমাদের সাথে ব্যবসা করার জন্য। 🤝']];
  h+=`<div class="card" style="margin:0 0 12px"><b>💬 হোয়াটসঅ্যাপে মেসেজ পাঠান</b><div class="chips" style="margin:8px 0">${T.map(x=>`<button data-act="tpl" data-m="${esc(x[1])}">${x[0]}</button>`).join('')}</div><textarea id="cm" style="font-size:16px" placeholder="এখানে মেসেজ লিখুন, বা ওপরের একটা বেছে নিন"></textarea><div style="margin-top:10px"><a id="cmsend" class="btn get" target="_blank" rel="noopener" data-ph="${waNum(c)}" href="https://wa.me/${waNum(c)}">পাঠান</a></div></div>`}
  h+=`<section class="hero"><p class="lab">${b<-0.005?"অগ্রিম জমা":"এর কাছে পাওনা"}</p><p class="big" style="color:var(${b<-0.005?"--grn":"--red"})">${fmt(Math.abs(b)<0.005?0:Math.abs(b))}</p></section>`;
+ const sp=dueSplit(c.id);
+ if(b>0.005)h+=`<div style="display:flex;gap:8px;margin:0 0 12px"><div class="card" style="flex:1;margin:0;text-align:center"><small class="mut">পুরনো বাকি</small><div style="font-weight:700;font-size:18px">${fmt(sp.o)}</div></div><div class="card" style="flex:1;margin:0;text-align:center"><small class="mut">নতুন বাকি</small><div style="font-weight:700;font-size:18px">${fmt(sp.n)}</div></div></div>`;
  h+=cMini(c.id);
  h+=`<div class="two"><button class="btn give" data-act="new" data-type="give">মাল দিলাম</button><button class="btn get" data-act="new" data-type="get">টাকা পেলাম</button></div>`;
  try{if(simOn()){if(!SIM.cfg){if(!SIM.cfgReq){SIM.cfgReq=1;simLoadCfg().then(()=>{if(!HUB&&cur)render()})}}else{const lk=simCidLink(c.id);if(lk){const st=simStock(lk.k);if(st){h+=simStockHtml(st);if(!SIM.ldF||SIM.ldF[lk.k]!==st.f){SIM.ldF=SIM.ldF||{};SIM.ldF[lk.k]=st.f;simLoadFrom(st.f).then(()=>{SIM_SC.t=0;if(!HUB&&cur===c.id)render()})}}}}}}catch(e){}
- if(b>0.005)h+=`<div class='card'><b>টাকা পেলেন?</b><div style='display:flex;gap:8px;margin-top:8px'><input id='qpa' inputmode='decimal' placeholder='কত টাকা পেলেন (${curSym()})' style='flex:1'><button class='btn get' style='width:auto' data-act='quickpay'>জমা নিন</button></div></div>`;
+ if(b>0.005)h+=`<div class='card'><b>টাকা পেলেন?</b><div style='display:flex;gap:8px;margin-top:8px'><input id='qpa' inputmode='decimal' placeholder='কত টাকা পেলেন (${curSym()})' style='flex:1'><button class='btn get' style='width:auto' data-act='quickpay'>জমা নিন</button></div>${sp.o>0.005?`<label>কোন বাকি থেকে কাটবে</label>${ptSeg('setqpt',QPT&&QPT.cid===c.id?QPT.pt:ptDef(c.id,today()))}`:''}</div>`;
  const ph=(c.phone||"").replace(/\D/g,"");
  if(ph&&b>0.005){const m=`আসসালামু আলাইকুম ${c.name}, আপনার কাছে আমার ${fmt(b)} বাকি আছে। সুবিধামতো পরিশোধ করলে খুশি হব। ধন্যবাদ।`;h+=`<div style="margin-top:10px"><a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/${ph}?text=${encodeURIComponent(m)}">হোয়াটসঅ্যাপে টাকার কথা মনে করান</a></div>`}
  if(!ph)h+=`<div class="card"><label for="ph" style="margin-top:0">হোয়াটসঅ্যাপ নম্বর যোগ করুন (দেশের কোড সহ)</label><input id="ph" inputmode="tel" placeholder="60123456789"><div style="margin-top:10px"><button class="btn ghost" data-act="savephone">নম্বর সংরক্ষণ করুন</button></div></div>`;
  h+=`<h2>লেনদেনের খাতা</h2>`;
  if(!txs.length)return h+`<p class="empty">এখনো কোনো লেনদেন নেই।</p>`;
- return h+`<ul class="list txl">${txs.map(t=>`<li class="tx tx2 ${t.type==="give"?"tg":"tp"}"><div class="txm"><span class="txi">${t.type==="give"?"📦":"💵"}</span><div style="min-width:0"><b class="${t.type==="give"?"red":"grn"}">${isOld(t)?"পুরনো বাকি":t.type==="give"?"মাল দিলাম":"টাকা পেলাম"}: ${fmt(t.amt)}</b><small>${fd(t.date)}${t.note?" · "+esc(t.note):""}</small>${(t.lines||[]).length?`<span class="txln">${(t.lines||[]).map(l=>{const p=S.products.find(x=>x.id===l.pid);return `<i>${esc(p?p.name:'?')} ${n(l.q)}×${n(l.pr)}</i>`}).join('')}</span>`:''}</div></div><div class="txa">${billLink(t.id)?`<a class="del bl" data-bl="bn" data-cid="${t.cid}" target="_blank" rel="noopener" href="${billLink(t.id,'bn')}">🧾 বিল বাংলা</a><a class="del bl" data-bl="en" data-cid="${t.cid}" target="_blank" rel="noopener" href="${billLink(t.id,'en')}">🧾 English</a>`:`<button class="del" data-act="nophone">বিল পাঠান</button>`}<button class="del" data-act="edittx" data-id="${t.id}">বদলান</button><button class="del dl" data-act="deltx" data-id="${t.id}">${delId===t.id?"নিশ্চিত? আবার চাপুন":"মুছুন"}</button></div></li>`).join("")}</ul>`;
+ return h+`<ul class="list txl">${txs.map(t=>`<li class="tx tx2 ${t.type==="give"?"tg":"tp"}"><div class="txm"><span class="txi">${t.type==="give"?"📦":"💵"}</span><div style="min-width:0"><b class="${t.type==="give"?"red":"grn"}">${isOld(t)?"পুরনো বাকি":t.type==="give"?"মাল দিলাম":"টাকা পেলাম"}: ${fmt(t.amt)}</b><small>${fd(t.date)}${t.note?" · "+esc(t.note):""}</small>${t.type==='get'&&t.pt?`<small>${t.pt==='n'?'নতুন বাকি থেকে কাটা':'পুরনো বাকি থেকে কাটা'}</small>`:''}${(t.lines||[]).length?`<span class="txln">${(t.lines||[]).map(l=>{const p=S.products.find(x=>x.id===l.pid);return `<i>${esc(p?p.name:'?')} ${n(l.q)}×${n(l.pr)}</i>`}).join('')}</span>`:''}</div></div><div class="txa">${billLink(t.id)?`<a class="del bl" data-bl="bn" data-cid="${t.cid}" target="_blank" rel="noopener" href="${billLink(t.id,'bn')}">🧾 বিল বাংলা</a><a class="del bl" data-bl="en" data-cid="${t.cid}" target="_blank" rel="noopener" href="${billLink(t.id,'en')}">🧾 English</a>`:`<button class="del" data-act="nophone">বিল পাঠান</button>`}<button class="del" data-act="edittx" data-id="${t.id}">বদলান</button><button class="del dl" data-act="deltx" data-id="${t.id}">${delId===t.id?"নিশ্চিত? আবার চাপুন":"মুছুন"}</button></div></li>`).join("")}</ul>`;
 }
-function vAdd(){add.manual=false;const E=add.editId?S.tx.find(x=>x.id===add.editId):null;if(add.editId&&!E)add.editId=null;
+function vAdd(){add.manual=false;add.ptMan=false;add.pt=null;const E=add.editId?S.tx.find(x=>x.id===add.editId):null;if(add.editId&&!E)add.editId=null;
  add.items=E?mkEditItems(E.lines):topProducts().map(p=>({pid:p.id,q:0,pr:p.sell||0}));add.q='';
  const rowsH=`<div id='sale' style='display:${add.type==='give'?'block':'none'}'><label style='display:flex;align-items:center;gap:10px;font-weight:600;background:var(--sf);border:1px solid var(--ln);border-radius:8px;padding:10px 12px;margin-top:14px'><input type='checkbox' id='aold' style='width:24px;min-height:24px;flex:none' ${E&&isOld(E)?'checked':''}> <span class='ck-t'><b>এটা পুরনো বাকি</b><small>আগের হিসাব, আজকের মাল নয়</small></span></label><label>কত পিস বিক্রি হয়েছে</label><ul class='list' id='items' style='display:${add.items.length?'block':'none'}'>${itemsHtml()}</ul><button class='btn ghost' data-act='toggleadd' style='margin-top:10px'>+ প্রোডাক্ট যোগ করুন</button><div id='addp' class='card' style='display:none'><label for='isq' style='margin-top:0'>তালিকা থেকে খুঁজুন</label><input id='isq' autocomplete='off' placeholder='মালের নাম লিখুন'><div id='matches' style='margin-top:8px'>${matchHtml()}</div><p style='margin:14px 0 4px;font-weight:600'>তালিকায় নেই? নতুন প্রোডাক্ট বানান</p><label for='npn' style='margin-top:4px'>মালের নাম</label><input id='npn' autocomplete='off' placeholder='যেমন: Umobile'><label for='npq'>কত পিস দিলেন</label><input id='npq' inputmode='decimal' placeholder='যেমন: 5'><label for='nps'>বিক্রির দাম, প্রতি পিস (${curSym()})</label><input id='nps' inputmode='decimal' placeholder='যেমন: 28'><label for='npb'>কেনা দাম, প্রতি পিস (${curSym()}) — ইচ্ছা হলে</label><input id='npb' inputmode='decimal' placeholder='লাভ হিসাবের জন্য'><div style='margin-top:10px'><button class='btn' data-act='newprod'>প্রোডাক্ট সংরক্ষণ করে যোগ করুন</button></div></div><p class='mut' style='font-size:14px;margin-top:8px'>প্রতিটা মালের বাঁ ঘরে পিস, ডান ঘরে প্রতি পিসের দাম। ভুল হলে ঘরে চেপে ঠিক করে নিন।</p></div>`;
  if(!VC().length)return `<h2>নতুন এন্ট্রি</h2><p class="empty">এন্ট্রি দেওয়ার আগে অন্তত একজন ক্লায়েন্ট যোগ করুন।</p><button class="btn" data-act="goclients">ক্লায়েন্ট যোগ করুন</button>`;
  const opts=VC().sort((a,b)=>a.name.localeCompare(b.name)).map(c=>`<option value="${c.id}"${c.id===add.cid?" selected":""}>${esc(c.name)}</option>`).join("");
  return `<h2 style="margin-top:4px">${E?"এন্ট্রি বদলান":"নতুন এন্ট্রি"}</h2><div class="seg"><button data-act="settype" data-type="give" class="${add.type==="give"?"on":""}">মাল দিলাম</button><button data-act="settype" data-type="get" class="${add.type==="get"?"on":""}">টাকা পেলাম</button></div>
  <label for="ac">ক্লায়েন্ট</label><select id="ac"><option value="">বেছে নিন</option>${opts}</select>
- ${rowsH}<label for="aa">টাকার অঙ্ক (${curSym()})</label><input id="aa" inputmode="decimal" autocomplete="off" value="${E?E.amt:""}">
+ ${rowsH}<div id="ptw" style="display:none"></div><label for="aa">টাকার অঙ্ক (${curSym()})</label><input id="aa" inputmode="decimal" autocomplete="off" value="${E?E.amt:""}">
  <label for="an">নোট (ইচ্ছা হলে)</label><input id="an" autocomplete="off" placeholder="${BTK()&&BTK()!=='sim'?'যেমন: '+BTX().p1+'-10*30=300/'+BTX().p2+'-5*28=140':'যেমন: Maxis-10*30=300/Celcom-5*28=140'}" value="${E?esc(E.note||""):""}"><p id="hint" class="mut" style="font-size:15px;margin-top:6px"></p>
  <label for="ad">তারিখ</label><input id="ad" type="date" value="${E?E.date:today()}">
  <div style="margin-top:18px"><button id="sv" class="btn ${add.type}" data-act="saveadd">${E?"পরিবর্তন সংরক্ষণ করুন":(add.type==="give"?"মাল দেওয়া":"টাকা পাওয়া")+" সংরক্ষণ করুন"}</button></div>${E?'<div style="margin-top:10px"><button class="btn ghost" data-act="canceledit">বাতিল করুন</button></div>':""}`;
@@ -1399,11 +1417,13 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(
   S.cash=S.cash||[];const mkd=mkDefault(p.id,''),cst=mkCost(p.id,mkd);S.cash.push({id:uid(),pid:p.id,q,pr,cost:cst,date:today(),...(mkd?{mk:mkd}:{})});save(['stock']);const pf=q*(pr-cst);cs.pid='';render();scrollTo(0,0);toast('সংরক্ষিত হয়েছে। লাভ '+fmt(pf))}
  else if(a==='csdel'){const id=t.dataset.id;if(delId===id){S.cash=(S.cash||[]).filter(x=>x.id!==id);delId=null;save(['stock']);render();toast('মুছে ফেলা হয়েছে')}else{delId=id;render()}}
 });
+document.addEventListener('change',e=>{if(e.target.id==='ac'){add.ptMan=false;ptUpd()}else if(e.target.id==='ad')ptUpd()});
 function render(){try{helpUpd()}catch(e){}
  if(HUB){$('#nav').style.display='none';$('#app').innerHTML=HUB==='probash'?vProbash():HUB==='cidb'?vCidb():HUB==='visa'?vVisa():HUB==='med'?vMed():HUB==='pass'?vPass():HUB==='epf'?vEpf():HUB==='fb'?vFb():HUB==='sim'?vSim():HUB==='simcust'?vSimCust():HUB==='simjoin'?vSimJoin():HUB==='simstaff'?vSimStaff():vHub();return}
  $('#nav').style.display='';
  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
  $('#app').innerHTML=(cur==='__pay'||cur==='__own'?'':subBanner())+(cur==='__own'?vOwner():cur==='__pay'?vPay():cur==='__b'?vBcast():cur==='__cash'?vCash():cur==='__crep'?vCustRep():cur==='__dmrep'?vDayMonth():cur==='__xp'?vExp():cur==='__diary'?vDiary():cur==='__ord'?vOrders():cur==='__radar'?vRadar():cur==='__dist'?vDistList():(cur&&cur.indexOf('__d:')===0)?vDist():cur?vClient():(tab==='stock'&&curP)?vProduct():({home:vHome,clients:vClients,add:vAdd,stock:vStock,report:vReport})[tab]());
+ try{if($('#ptw'))ptUpd()}catch(e){}
 }
 document.addEventListener("click",e=>{
  const t=e.target.closest("[data-tab],[data-act]");if(!t)return;
@@ -1424,7 +1444,7 @@ document.addEventListener("click",e=>{
  else if(a==='newprod'){const nm=$('#npn').value.trim();if(!nm){toast('আগে মালের নাম লিখুন');$('#npn').focus();return}const q0=num($('#npq').value)||0,sell=num($('#nps').value)||0,buy=num($('#npb').value)||0;let p=S.products.find(x=>x.name.trim().toLowerCase()===nm.toLowerCase());if(p){p.off=false;if(sell)p.sell=sell;if(buy)p.buy=buy}else{p={id:uid(),name:nm,buy,sell,low:0};S.products.push(p)}save(['stock']);const ex=add.items.find(x=>x.pid===p.id);if(ex){if(q0)ex.q=q0;if(sell)ex.pr=sell}else add.items.push({pid:p.id,q:q0,pr:sell||p.sell||0});['#npn','#npq','#npb','#nps','#isq'].forEach(x=>{const e=$(x);if(e)e.value=''});add.q='';$('#addp').style.display='none';redrawItems();const qs=document.querySelectorAll('.sq'),k=add.items.findIndex(x=>x.pid===p.id),el=qs[k];if(el){const li=el.closest('li');li.scrollIntoView({block:'center',behavior:'smooth'});li.style.background='var(--gb)';setTimeout(()=>{li.style.background=''},2500);if(!q0)el.focus()}toast(nm+' যোগ হয়েছে'+(q0?'':', এবার পিস লিখুন'))}
  else if(a==='additem'){const p=S.products.find(x=>x.id===t.dataset.id);if(p&&!add.items.some(i=>i.pid===p.id))add.items.push({pid:p.id,q:0,pr:p.sell||0});add.q='';$('#isq').value='';redrawItems();const qs=document.querySelectorAll('.sq');if(qs.length)qs[qs.length-1].focus()}
  else if(a==='rmitem'){add.items.splice(+t.dataset.i,1);redrawItems()}
- else if(a==='quickpay'){const amt=num($('#qpa').value);if(!(amt>0)){toast('কত টাকা পেলেন সেটা লিখুন');return}const id=uid(),cid=cur,c=S.clients.find(x=>x.id===cid);S.tx.push({id,cid,type:'get',amt,note:'',date:today(),lines:[]});save([cid]);go('clients',cid);showBanner(id,c)}
+ else if(a==='quickpay'){const amt=num($('#qpa').value);if(!(amt>0)){toast('কত টাকা পেলেন সেটা লিখুন');return}const id=uid(),cid=cur,c=S.clients.find(x=>x.id===cid);const qs=dueSplit(cid),pt=qs.o<=0.005?'n':(QPT&&QPT.cid===cid?QPT.pt:ptDef(cid,today()));QPT=null;S.tx.push({id,cid,type:'get',amt,note:'',date:today(),lines:[],pt});save([cid]);go('clients',cid);showBanner(id,c)}
  else if(a==="nophone"){toast("আগে ক্লায়েন্টের হোয়াটসঅ্যাপ নম্বর যোগ করুন");window.scrollTo(0,0)}
  else if(a==="edittx"){const x=S.tx.find(y=>y.id===t.dataset.id);if(!x)return;add.editId=x.id;add.type=x.type;add.cid=x.cid;tab="add";cur=null;showForm=false;delId=null;render();scrollTo(0,0)}
  else if(a==="canceledit"){const c0=add.cid;add.editId=null;go("clients",c0)}
@@ -1456,17 +1476,20 @@ document.addEventListener("click",e=>{
   const p=$("#ph").value.trim();if(!p.replace(/\D/g,"")){toast("নম্বর লিখুন");return}
   const c=S.clients.find(x=>x.id===cur);c.phone=p;save([c.id]);render();toast("নম্বর সংরক্ষিত হয়েছে");
  }
+ else if(a==="setpt"){add.pt=t.dataset.pt;add.ptMan=true;ptUpd()}
+ else if(a==="setqpt"){QPT={cid:cur,pt:t.dataset.pt};t.parentNode.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===t))}
  else if(a==="settype"){
   add.type=t.dataset.type;
-  document.querySelectorAll(".seg button").forEach(b=>b.classList.toggle("on",b.dataset.type===add.type));
+  document.querySelectorAll(".seg button[data-type]").forEach(b=>b.classList.toggle("on",b.dataset.type===add.type));try{ptUpd()}catch(e){}
   const s=$("#sv");const sl=$('#sale');if(sl)sl.style.display=add.type==='give'?'block':'none';s.className="btn "+add.type;if(!add.editId)s.textContent=(add.type==="give"?"মাল দেওয়া":"টাকা পাওয়া")+" সংরক্ষণ করুন";
  }
  else if(a==="saveadd"){
   const cid=$("#ac").value,amt=num($("#an")?$("#aa").value:""),note=$("#an").value.trim(),date=$("#ad").value||today();
   if(!cid){toast("ক্লায়েন্ট বেছে নিন");return}
   if(!(amt>0)){toast("টাকার অঙ্ক সঠিকভাবে লিখুন");return}
-  if(add.editId){const x=S.tx.find(y=>y.id===add.editId);if(x){const oc=x.cid;const od=add.type==='give'&&$('#aold')&&$('#aold').checked;Object.assign(x,{cid,type:add.type,amt,note,date,old:od,lines:add.type==='give'&&!od?saleLines(note):[]});save(oc===cid?[cid]:[oc,cid]);add.editId=null;add.cid=cid;toast("পরিবর্তন সংরক্ষিত। "+S.clients.find(z=>z.id===cid).name+"-এর বাকি এখন "+fmt(Math.max(bal(cid),0)));go("clients",cid);return}}
-  const od=add.type==='give'&&$('#aold')&&$('#aold').checked;S.tx.push({id:uid(),cid,type:add.type,amt,note,date,old:od,lines:add.type==='give'&&!od?saleLines(note):[]});save([cid]);add.cid=cid;
+  try{ptUpd()}catch(e){}
+  if(add.editId){const x=S.tx.find(y=>y.id===add.editId);if(x){const oc=x.cid;const od=add.type==='give'&&$('#aold')&&$('#aold').checked;const npt=add.type==='get'?(add.pt||x.pt||'o'):(x.type==='give'?x.pt:(od?null:'n'));Object.assign(x,{cid,type:add.type,amt,note,date,old:od,lines:add.type==='give'&&!od?saleLines(note):[]});if(npt)x.pt=npt;else delete x.pt;save(oc===cid?[cid]:[oc,cid]);add.editId=null;add.cid=cid;toast("পরিবর্তন সংরক্ষিত। "+S.clients.find(z=>z.id===cid).name+"-এর বাকি এখন "+fmt(Math.max(bal(cid),0)));go("clients",cid);return}}
+  const od=add.type==='give'&&$('#aold')&&$('#aold').checked;const nx={id:uid(),cid,type:add.type,amt,note,date,old:od,lines:add.type==='give'&&!od?saleLines(note):[]};if(add.type==='get')nx.pt=add.pt||'o';else if(!od)nx.pt='n';S.tx.push(nx);save([cid]);add.cid=cid;
   const c=S.clients.find(x=>x.id===cid);const newId=S.tx[S.tx.length-1].id;
   go("clients",cid);
   const bl=billLink(newId);
@@ -3486,7 +3509,7 @@ function xcBuild(){
  out.forEach(o=>{
   if(o.k==='c'){const c=o.c,hasC=c.cost!=null&&isFinite(+c.cost);R({date:c.date,cid:null,type:'নগদ বিক্রি',prod:pn(c.pid),q:xcNum(c.q),buy:hasC?xcNum(c.cost):'',sell:xcNum(c.pr),pf:hasC?xcNum(c.q*(c.pr-c.cost)):'',amt:xcNum(c.q*c.pr),bal:''});return}
   const t=o.t,amt=+t.amt||0,note=t.note||'';
-  if(t.type==='get'){R({date:t.date,cid:t.cid,type:'টাকা পেলাম',q:'',buy:'',sell:'',pf:'',amt:xcNum(amt),bal:xcNum(o.bal),note});return}
+  if(t.type==='get'){R({date:t.date,cid:t.cid,type:t.pt==='n'?'টাকা পেলাম (নতুন বাকি)':t.pt==='o'?'টাকা পেলাম (পুরনো বাকি)':'টাকা পেলাম',q:'',buy:'',sell:'',pf:'',amt:xcNum(amt),bal:xcNum(o.bal),note});return}
   if(isOld(t)){R({date:t.date,cid:t.cid,type:'পুরনো বাকি',q:'',buy:'',sell:'',pf:'',amt:xcNum(amt),bal:xcNum(o.bal),note});return}
   const L=t.lines||[];
   if(!L.length){R({date:t.date,cid:t.cid,type:'বিক্রি (বাকিতে)',q:'',buy:'',sell:'',pf:'',amt:xcNum(amt),bal:xcNum(o.bal),note});return}
