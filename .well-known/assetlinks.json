@@ -1,0 +1,11 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.gononakhata.app",
+      "sha256_cert_fingerprints":
+        ["7F:58:4C:34:D1:12:36:DE:25:B2:61:ED:A4:85:32:F6:D6:6F:F3:10:CC:1D:F6:EB:89:35:BC:0E:A0:6A:99:54"]
+    }
+  }
+]
